@@ -2,6 +2,7 @@ package com.ceos21.spring_knowledgeIn_21st.domain.image.domain;
 
 import com.ceos21.spring_knowledgeIn_21st.domain.post.domain.Post;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -23,7 +24,7 @@ public class Image {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @NotNull
+    @NotBlank
     @Column(name = "image_url")
     private String imageUrl;
 }
