@@ -22,6 +22,9 @@ public class Comment extends BaseEntity {
     private Long id;
 
     @NotBlank
+    private String content;
+
+    @NotBlank
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -35,7 +38,4 @@ public class Comment extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "answer_id")
     private Answer answer;
-
-    @NotBlank
-    private String content;
 }

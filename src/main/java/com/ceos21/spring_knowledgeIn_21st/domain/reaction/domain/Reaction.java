@@ -6,8 +6,8 @@ import com.ceos21.spring_knowledgeIn_21st.domain.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Getter
 @Builder
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity

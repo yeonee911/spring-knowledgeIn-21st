@@ -25,11 +25,6 @@ public class Post extends BaseEntity {
     @Column(name = "post_id")
     private Long id;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
-    private User user;
-
     @NotBlank
     private String title;
 
@@ -45,4 +40,8 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<PostHashtag> postHashtags = new ArrayList<>();
 
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private User user;
 }
