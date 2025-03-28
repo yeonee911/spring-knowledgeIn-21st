@@ -16,25 +16,20 @@ import java.util.List;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final CommentRepository commentRepository;
 
-    // 게시글 저장
+    // 게시글 추가
     @Transactional
     public void savePost(Post post) {
         postRepository.save(post);
     }
 
-    // 게시글 조회
-    public Post findPostById(Long postId) {
-        return postRepository.findById(postId);
+    // 게시글 전체 조회
+    public List<Post> findPosts() {
+        return postRepository.findAll();
     }
 
-    // 특정 게시글의 모든 댓글 가져오기
-    public List<Comment> getCommentsByPostId(Long postId) {
-        Post post = postRepository.findById(postId);
-        if (post != null) {
-            return post.getComments(); // Post 엔티티에서 comments 리스트 반환
-        }
-        throw new IllegalArgumentException("해당 ID의 게시글이 존재하지 않습니다.");
+    // (특정) 게시글 조회
+    public Post findPostById(Long postId) {
+        return postRepository.findById(postId).orElseThrow();
     }
 }
