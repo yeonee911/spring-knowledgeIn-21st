@@ -14,8 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.ceos21.spring_knowledgeIn_21st.global.exception.ErrorCode.POST_NOT_FOUND;
-import static com.ceos21.spring_knowledgeIn_21st.global.exception.ErrorCode.USER_NOT_FOUND;
+import static com.ceos21.spring_knowledgeIn_21st.global.exception.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -46,24 +45,47 @@ public class PostService {
         return savedPost;
     }
 
-    // 게시글 전체 조회
+    /**
+     * 게시글 전체 조회
+     * */
     public List<Post> findPosts() {
         return postRepository.findAll();
     }
 
-    // (특정) 게시글 조회
+    /**
+     * (특정) 게시글 조회
+     * */
     public Post findPostById(Long postId) {
         return postRepository.findById(postId).orElseThrow(()-> new CustomException(POST_NOT_FOUND));
     }
 
-    // (특정) 게시글 수정
+    /**
+     * (특정) 게시글 수정
+     * */
     public void updatePost(Post post) {
 
     }
 
-    // (특정) 게시글 삭제
+    /**
+     * (특정) 게시글 삭제
+     * */
+    @Transactional
+    public void deletePost(Long postId, Long userId) {
+        // 게시글 조회
+        Post post = postRepository.findById(postId)
+                .orElseThrow(()-> new CustomException(POST_NOT_FOUND));
+
+        // 게시글 작성자와 삭제 요청자 일치 확인
+        if (!post.getUser().getId().equals(userId)) {
+            throw new CustomException(POST_ACCESS_DENIED);
+        }
+
+        postRepository.delete(post);
+    }
 
 
-    // (특정) 해시태그를 통한 게시글 조회
 
+    /**
+     * (특정) 해시태그를 통한 게시글 조회
+     * */
 }

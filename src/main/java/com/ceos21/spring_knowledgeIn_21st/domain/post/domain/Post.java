@@ -46,7 +46,7 @@ public class Post extends BaseEntity {
     private List<PostHashtag> postHashtags = new ArrayList<>();
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @JsonBackReference
     private User user;
