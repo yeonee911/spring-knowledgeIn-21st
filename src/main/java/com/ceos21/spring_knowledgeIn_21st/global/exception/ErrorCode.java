@@ -16,6 +16,9 @@ public enum ErrorCode {
 
     // PostError
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "Post not exists"),
+
+    // UserError
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "User not exists"),
     ;
 
     private final HttpStatus status;

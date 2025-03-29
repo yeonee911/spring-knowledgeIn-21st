@@ -13,10 +13,4 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    /**
-     * 게시글 작성
-     */
-    @Transactional
-
-
 }

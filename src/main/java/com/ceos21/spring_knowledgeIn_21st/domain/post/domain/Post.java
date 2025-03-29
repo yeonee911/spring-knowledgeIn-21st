@@ -5,6 +5,9 @@ import com.ceos21.spring_knowledgeIn_21st.domain.postHashtag.domain.PostHashtag;
 import com.ceos21.spring_knowledgeIn_21st.domain.user.domain.User;
 import com.ceos21.spring_knowledgeIn_21st.domain.comment.domain.Comment;
 import com.ceos21.spring_knowledgeIn_21st.domain.image.domain.Image;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -35,13 +38,29 @@ public class Post extends BaseEntity {
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Image> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<PostHashtag> postHashtags = new ArrayList<>();
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private User user;
+
+    public void addImage(Image image) {
+        if (this.images == null) {
+            this.images = new ArrayList<>();  // 안전하게 빈 리스트로 초기화
+        }
+        this.images.add(image);
+    }
+    public void addPostHashtag(PostHashtag postHashtag) {
+        if (this.postHashtags == null) {
+            this.postHashtags = new ArrayList<>();  // 안전하게 빈 리스트로 초기화
+        }
+        this.postHashtags.add(postHashtag);
+    }
 }

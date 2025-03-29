@@ -2,6 +2,7 @@ package com.ceos21.spring_knowledgeIn_21st.domain.postHashtag.domain;
 
 import com.ceos21.spring_knowledgeIn_21st.domain.hashtag.domain.Hashtag;
 import com.ceos21.spring_knowledgeIn_21st.domain.post.domain.Post;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -22,6 +23,7 @@ public class PostHashtag {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
+    @JsonBackReference
     private Post post;
 
     @NotNull
