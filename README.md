@@ -1,7 +1,7 @@
 # ✏️CRUD 기능 구현
 
 ## ☁️ERD
-![ERD 수정본](src/main/resources/static/ERD 수정본.png)
+![ERD 수정본](src/main/resources/static/ERD_수정본.png)
 - BaseEntity 적용
 - Post, Answer 엔티티 구분
 
