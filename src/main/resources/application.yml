@@ -17,3 +17,5 @@ logging:
     org.hibernate.SQL: debug
     org.hibernate.type.descriptor.sql.BasicBinder: trace
 
+jwt:
+  secretKey: OC2g5YT7kfFzMF18MZu8OTqf18RVrPlyRymneuEUB4WztTpiz6MZHeMZKhq9e0mJ+mcRLcUPPqE5uYQhZnnI7g==

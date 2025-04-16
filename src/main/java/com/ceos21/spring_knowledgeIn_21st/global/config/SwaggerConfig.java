@@ -30,7 +30,7 @@ public class SwaggerConfig {
     private Components authSetting() {
         return new Components()
                 .addSecuritySchemes(
-                        "Authorization",
+                        "Bearer Authorization",
                         new SecurityScheme()
                                 .type(SecurityScheme.Type.HTTP)
                                 .scheme("bearer")

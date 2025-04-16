@@ -1,6 +1,6 @@
 package com.ceos21.spring_knowledgeIn_21st.domain.answer.domain;
 
-import com.ceos21.spring_knowledgeIn_21st.domain.baseEntity.domain.BaseEntity;
+import com.ceos21.spring_knowledgeIn_21st.global.common.BaseEntity;
 import com.ceos21.spring_knowledgeIn_21st.domain.comment.domain.Comment;
 import com.ceos21.spring_knowledgeIn_21st.domain.reaction.domain.Reaction;
 import com.ceos21.spring_knowledgeIn_21st.domain.user.domain.User;
