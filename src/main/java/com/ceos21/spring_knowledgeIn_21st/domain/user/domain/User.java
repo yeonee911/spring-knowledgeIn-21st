@@ -1,6 +1,7 @@
 package com.ceos21.spring_knowledgeIn_21st.domain.user.domain;
 
 import com.ceos21.spring_knowledgeIn_21st.domain.answer.domain.Answer;
+import com.ceos21.spring_knowledgeIn_21st.domain.user.enums.UserRole;
 import com.ceos21.spring_knowledgeIn_21st.global.common.BaseEntity;
 import com.ceos21.spring_knowledgeIn_21st.domain.comment.domain.Comment;
 import com.ceos21.spring_knowledgeIn_21st.domain.post.domain.Post;
@@ -36,6 +37,10 @@ public class User extends BaseEntity {
     @Column(name = "user_password")
     private String password;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserRole role;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Post> posts = new ArrayList<>();
@@ -48,4 +53,5 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Reaction> reactions  = new ArrayList<>();
+
 }

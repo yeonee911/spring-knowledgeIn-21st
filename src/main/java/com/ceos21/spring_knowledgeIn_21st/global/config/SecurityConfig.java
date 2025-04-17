@@ -1,22 +1,23 @@
 package com.ceos21.spring_knowledgeIn_21st.global.config;
 
+import com.ceos21.spring_knowledgeIn_21st.global.jwt.JwtAuthenticationFilter;
+import com.ceos21.spring_knowledgeIn_21st.global.jwt.JwtAuthorizationFilter;
+import com.ceos21.spring_knowledgeIn_21st.global.jwt.JwtUtil;
+import com.ceos21.spring_knowledgeIn_21st.global.security.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-
-import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
 @RequiredArgsConstructor
@@ -24,24 +25,34 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableWebMvc
 public class SecurityConfig {
 
+    private final JwtUtil jwtUtil;
+    private final UserDetailsServiceImpl userDetailsService;
+
     @Bean
     public PasswordEncoder passwordEncoder() {  // 비밀번호 암호화
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http
-                .csrf(csrf -> csrf.disable())
-                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)) // H2 콘솔 허용
-                .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(STATELESS)) // 기본 설정된 Session 방식은 사용하지 않고 JWT 방식을 사용
-                .authorizeHttpRequests(requests -> requests
-                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // resources 접근 허용 설정
-                        .requestMatchers("/", "/swagger-ui/**", "/v3/**").permitAll()   // 메인 페이지, Swagger
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers(PathRequest.toH2Console()).permitAll() // H2 콘솔
-                        .anyRequest().authenticated() // 나머지 요청은 인증 필요
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
+
+        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtUtil);
+        jwtAuthenticationFilter.setFilterProcessesUrl("/api/auth/signin");
+
+        http.csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                        .requestMatchers("/", "/swagger-ui/**", "/v3/**", "/api/auth/signup", "/api/auth/signin").permitAll()
+                        .anyRequest().authenticated()
                 )
-                .build();
+                .addFilterBefore(new JwtAuthorizationFilter(jwtUtil, userDetailsService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        return http.build();
     }
 }

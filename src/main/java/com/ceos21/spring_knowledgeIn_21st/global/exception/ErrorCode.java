@@ -11,6 +11,7 @@ public enum ErrorCode {
     INVALID_PARAMETER(HttpStatus.BAD_REQUEST, "Invalid parameter included"),
     RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, "Resource not exists"),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error"),
+    INVALID_ACCESS(HttpStatus.FORBIDDEN, "Invalid access"),
 
     // PostError
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "Post not exists"),

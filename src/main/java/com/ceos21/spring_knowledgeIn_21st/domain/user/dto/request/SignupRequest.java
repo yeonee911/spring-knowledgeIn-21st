@@ -1,6 +1,7 @@
 package com.ceos21.spring_knowledgeIn_21st.domain.user.dto.request;
 
 import com.ceos21.spring_knowledgeIn_21st.domain.user.domain.User;
+import com.ceos21.spring_knowledgeIn_21st.domain.user.enums.UserRole;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 public record SignupRequest (
@@ -13,6 +14,7 @@ public record SignupRequest (
                 .name(name)
                 .email(email)
                 .password(encoder.encode(password))
+                .role(UserRole.USER)
                 .build();
     }
 }
