@@ -17,5 +17,12 @@ logging:
     org.hibernate.SQL: debug
     org.hibernate.type.descriptor.sql.BasicBinder: trace
 
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    url: /v3/api-docs
+  api-docs:
+    path: /v3/api-docs
+
 jwt:
   secretKey: OC2g5YT7kfFzMF18MZu8OTqf18RVrPlyRymneuEUB4WztTpiz6MZHeMZKhq9e0mJ+mcRLcUPPqE5uYQhZnnI7g==

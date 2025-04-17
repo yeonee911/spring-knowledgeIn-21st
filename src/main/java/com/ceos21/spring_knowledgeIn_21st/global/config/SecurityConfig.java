@@ -22,7 +22,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
-@EnableWebMvc
 public class SecurityConfig {
 
     private final JwtUtil jwtUtil;
@@ -48,7 +47,12 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                        .requestMatchers("/", "/swagger-ui/**", "/v3/**", "/api/auth/signup", "/api/auth/signin").permitAll()
+                        .requestMatchers("/",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/swagger-resources/**",
+                                "/api/auth/signup",
+                                "/api/auth/signin").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtAuthorizationFilter(jwtUtil, userDetailsService), UsernamePasswordAuthenticationFilter.class)

@@ -3,6 +3,7 @@ package com.ceos21.spring_knowledgeIn_21st.domain.auth.api;
 import com.ceos21.spring_knowledgeIn_21st.domain.user.application.UserService;
 import com.ceos21.spring_knowledgeIn_21st.domain.user.dto.request.LoginRequest;
 import com.ceos21.spring_knowledgeIn_21st.domain.user.dto.request.SignupRequest;
+import com.ceos21.spring_knowledgeIn_21st.global.common.ApiResponse;
 import com.ceos21.spring_knowledgeIn_21st.global.exception.CustomException;
 import com.ceos21.spring_knowledgeIn_21st.global.security.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,10 +27,11 @@ public class AuthController {
             description = "새로운 사용자를 등록합니다."
     )
     @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody SignupRequest request) {
+    public ResponseEntity<ApiResponse<String>> signup(@RequestBody SignupRequest request) {
         userService.register(request);
-        return  ResponseEntity.status(HttpStatus.CREATED)
-                .body("success");
+        return  ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(ApiResponse.success(null));
     }
 
     @Operation(
@@ -41,12 +43,5 @@ public class AuthController {
         String token = userService.login(request);
         return  ResponseEntity.status(HttpStatus.CREATED)
                 .body("success");
-    }
-
-
-    @Operation(summary = "토큰 인증 테스트", description = "토큰이 유효하면 사용자 정보를 반환합니다.")
-    @GetMapping("/me")
-    public String getMyInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return "안녕하세요, " + userDetails.getUsername() + "님!";
     }
 }
