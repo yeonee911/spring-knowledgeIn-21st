@@ -3,6 +3,7 @@ package com.ceos21.spring_knowledgeIn_21st.global.config;
 import com.ceos21.spring_knowledgeIn_21st.global.jwt.JwtAuthenticationFilter;
 import com.ceos21.spring_knowledgeIn_21st.global.jwt.JwtAuthorizationFilter;
 import com.ceos21.spring_knowledgeIn_21st.global.jwt.JwtUtil;
+import com.ceos21.spring_knowledgeIn_21st.global.jwt.RequestBodyCachingFilter;
 import com.ceos21.spring_knowledgeIn_21st.global.security.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -17,7 +18,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
 @RequiredArgsConstructor
@@ -38,6 +38,12 @@ public class SecurityConfig {
     }
 
     @Bean
+    public RequestBodyCachingFilter requestBodyCachingFilter() {
+        return new RequestBodyCachingFilter();
+    }
+
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
 
         JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtUtil);
@@ -55,8 +61,24 @@ public class SecurityConfig {
                                 "/api/auth/signin").permitAll()
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(new JwtAuthorizationFilter(jwtUtil, userDetailsService), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                // 1) 캐싱 필터를 인증 필터(UsernamePasswordAuthenticationFilter) 앞에 등록
+                .addFilterBefore(
+                        requestBodyCachingFilter(),
+                        UsernamePasswordAuthenticationFilter.class
+                )
+
+                // 2) JWT 로그인 처리 필터 등록
+               .addFilterBefore(
+                       jwtAuthenticationFilter,
+                       UsernamePasswordAuthenticationFilter.class
+               )
+
+                // 3) JWT 인가(Authorization) 필터 등록은 인증 필터 이후에
+                .addFilterAfter(
+                        new JwtAuthorizationFilter(jwtUtil, userDetailsService),
+                        JwtAuthenticationFilter.class
+                );
+
         return http.build();
     }
 }

@@ -19,7 +19,7 @@ public enum ErrorCode {
 
     // UserError
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "User not exists"),
-    DUPLICATE_EMAIL(HttpStatus.CONFLICT, "Email already exists"),
+    DUPLICATE_EMAIL(HttpStatus.CONFLICT, "Email already exists")
     ;
 
     private final HttpStatus status;

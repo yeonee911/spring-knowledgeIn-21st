@@ -23,7 +23,7 @@ public class JwtUtil {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String AUTHORIZATION_KEY = "auth";  // 사용자 권한 값의 KEY
-    private static final String BEARER_PREFIX = "Bearer ";  // 토큰 식별자
+    public static final String BEARER_PREFIX = "Bearer ";  // 토큰 식별자
     private static final int BEARER_PREFIX_LENGTH = 7;
     private final long EXPIRATION_TIME = 1000 * 60 * 60L;  // 토큰 만료시간 : 1시간
 

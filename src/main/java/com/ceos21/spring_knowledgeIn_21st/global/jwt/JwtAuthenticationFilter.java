@@ -1,6 +1,8 @@
 package com.ceos21.spring_knowledgeIn_21st.global.jwt;
 
 import com.ceos21.spring_knowledgeIn_21st.domain.auth.dto.request.SigninRequest;
+import com.ceos21.spring_knowledgeIn_21st.global.common.ApiResponse;
+import com.ceos21.spring_knowledgeIn_21st.global.exception.CustomException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -12,10 +14,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -50,15 +55,37 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             throws IOException, ServletException {
 
         SecurityContextHolder.getContext().setAuthentication(authResult);   // 인증 정보 저장
-        chain.doFilter(request, response);
+
+        String email = authResult.getName();
+        String roles = authResult.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+
+        String token = jwtUtil.createToken(email, roles);
+
+        ApiResponse<Map<String, String>> responseBody = new ApiResponse<>(
+                "SUCCESS",
+                "로그인 성공",
+                Map.of("token", token)
+        );
+
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType("application/json;charset=UTF-8");
+        new ObjectMapper().writeValue(response.getWriter(), responseBody);
     }
 
     // 인증 실패 시 처리
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                               AuthenticationException failed) throws IOException {
+        ApiResponse<Void> responseBody = new ApiResponse<>(
+                "UNAUTHORIZED",
+                "아이디 또는 비밀번호가 올바르지 않습니다.",
+                null
+        );
+
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write("{\"error\":\"로그인 실패: " + failed.getMessage() + "\"}");
+        new ObjectMapper().writeValue(response.getWriter(), responseBody);
     }
 }

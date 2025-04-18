@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,20 +33,5 @@ public class UserService {
             throw new CustomException(DUPLICATE_EMAIL);
         }
         userRepository.save(request.toEntity(passwordEncoder));
-    }
-
-    @Transactional
-    public String login(SigninRequest request) {
-        // 인증 시도
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
-        );
-        // 사용자 정보 추출
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
-        // 토큰 발급
-        return jwtUtil.createToken(
-                userDetails.getUsername(),
-                userDetails.getUser().getRole().getAuthority());
     }
 }
