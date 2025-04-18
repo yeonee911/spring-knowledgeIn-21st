@@ -1,7 +1,6 @@
 package com.ceos21.spring_knowledgeIn_21st.global.jwt;
 
-import com.ceos21.spring_knowledgeIn_21st.domain.user.dto.request.LoginRequest;
-import com.ceos21.spring_knowledgeIn_21st.global.security.UserDetailsImpl;
+import com.ceos21.spring_knowledgeIn_21st.domain.auth.dto.request.SigninRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -13,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
@@ -30,10 +30,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             throws AuthenticationException {
         try {
             // JSON -> LoginRequest(email, password)
-            LoginRequest loginRequest = new ObjectMapper().readValue(request.getInputStream(), LoginRequest.class);
+            SigninRequest signinRequest = new ObjectMapper().readValue(request.getInputStream(), SigninRequest.class);
 
             UsernamePasswordAuthenticationToken authToken =
-                    new UsernamePasswordAuthenticationToken(loginRequest.email(), loginRequest.password());
+                    new UsernamePasswordAuthenticationToken(signinRequest.getEmail(), signinRequest.getPassword());
 
             // AuthenticationManager에게 인증 위임
             return authenticationManager.authenticate(authToken);
@@ -49,15 +49,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             FilterChain chain, Authentication authResult)
             throws IOException, ServletException {
 
-        UserDetailsImpl userDetails = (UserDetailsImpl) authResult.getPrincipal();
-        String token = jwtUtil.createToken(
-                userDetails.getUsername(),
-                userDetails.getUser().getRole().getAuthority()
-        );
-
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
-        response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write("{\"message\":\"로그인 성공\", \"token\":\"" + token + "\"}");
+        SecurityContextHolder.getContext().setAuthentication(authResult);   // 인증 정보 저장
+        chain.doFilter(request, response);
     }
 
     // 인증 실패 시 처리

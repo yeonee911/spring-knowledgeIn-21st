@@ -1,4 +1,4 @@
-package com.ceos21.spring_knowledgeIn_21st.domain.user.dto.request;
+package com.ceos21.spring_knowledgeIn_21st.domain.auth.dto.request;
 
 import com.ceos21.spring_knowledgeIn_21st.domain.user.domain.User;
 import com.ceos21.spring_knowledgeIn_21st.domain.user.enums.UserRole;

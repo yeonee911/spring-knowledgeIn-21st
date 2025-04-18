@@ -16,6 +16,8 @@ logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type.descriptor.sql.BasicBinder: trace
+    org.springframework.web: DEBUG
+    org.springframework.http.converter: DEBUG
 
 springdoc:
   swagger-ui:
