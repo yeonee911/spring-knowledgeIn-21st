@@ -25,19 +25,29 @@ public class JwtUtil {
     public static final String AUTHORIZATION_KEY = "auth";  // 사용자 권한 값의 KEY
     public static final String BEARER_PREFIX = "Bearer ";  // 토큰 식별자
     private static final int BEARER_PREFIX_LENGTH = 7;
-    private final long EXPIRATION_TIME = 1000 * 60 * 60L;  // 토큰 만료시간 : 1시간
+    private final long ACCESS_EXPIRATION_TIME = 1000 * 60 * 60L;  // Access Token 만료시간 : 1시간
+    private final long REFRESH_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 7L;  // Refresh Token 만료시간 : 7일
 
     @PostConstruct
     public void init() {
         key = Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
-    public String createToken(String email, String role) {
+    public String createAccessToken(String email, String role) {
         return BEARER_PREFIX + Jwts.builder()
                 .setSubject(email)
                 .claim(AUTHORIZATION_KEY, role)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_EXPIRATION_TIME))
+                .signWith(key, SignatureAlgorithm.HS512)
+                .compact();
+    }
+
+    public String createRefreshToken(String email) {
+        return BEARER_PREFIX + Jwts.builder()
+                .setSubject(email)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + REFRESH_EXPIRATION_TIME))
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
     }
@@ -57,9 +67,9 @@ public class JwtUtil {
         } catch (SecurityException | MalformedJwtException | SignatureException e) {
             log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
         } catch (ExpiredJwtException e) {
-            log.error("Expired JWT token, 만료된 JWT token 입니다.");
+            log.error("Expired JWT accessToken, 만료된 JWT accessToken 입니다.");
         } catch (UnsupportedJwtException e) {
-            log.error("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
+            log.error("Unsupported JWT accessToken, 지원되지 않는 JWT 토큰 입니다.");
         } catch (IllegalArgumentException e) {
             log.error("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
         }

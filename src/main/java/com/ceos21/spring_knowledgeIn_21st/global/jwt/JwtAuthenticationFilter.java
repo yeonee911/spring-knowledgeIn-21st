@@ -2,7 +2,6 @@ package com.ceos21.spring_knowledgeIn_21st.global.jwt;
 
 import com.ceos21.spring_knowledgeIn_21st.domain.auth.dto.request.SigninRequest;
 import com.ceos21.spring_knowledgeIn_21st.global.common.ApiResponse;
-import com.ceos21.spring_knowledgeIn_21st.global.exception.CustomException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -61,12 +60,16 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
-        String token = jwtUtil.createToken(email, roles);
+        String accessToken = jwtUtil.createAccessToken(email, roles);
+        String refreshToken = jwtUtil.createRefreshToken(email);
 
         ApiResponse<Map<String, String>> responseBody = new ApiResponse<>(
                 "SUCCESS",
                 "로그인 성공",
-                Map.of("token", token)
+                Map.of(
+                        "accessToken", accessToken,
+                        "refreshToekn", refreshToken
+                        )
         );
 
         response.setStatus(HttpServletResponse.SC_OK);
