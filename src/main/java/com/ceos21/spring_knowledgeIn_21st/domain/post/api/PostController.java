@@ -74,15 +74,22 @@ public class PostController {
 
     }
 
-    /*
-    @Operation(summary = "게시글 수정", description = "기존 게시글을 수정합니다")
     @PatchMapping("/posts/{postId}")
-    public ResponseEntity<PostResponse> updatePost(@PathVariable Long postId, @RequestBody PostUpdateRequest request) {
-        postService.updatePost(postId, request);
-        PostResponse response = new PostResponse(postId, "게시글이 수정되었습니다.", true);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+    @SecurityRequirement(name = "Authorization")
+    @Operation(
+            summary = "게시글 수정",
+            description = "게시글의 제목과 내용을 수정합니다"
+    )
+    public ResponseEntity<ApiResponse<PostResponse>> updatePost(
+            @PathVariable Long postId,
+            @RequestBody PostUpdateRequest request,
+            @AuthenticationPrincipal UserDetailsImpl userDetailsImpl
+    ) {
+        Post savedPost = postService.updatePost(postId, request, userDetailsImpl.getUserId());
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResponse.success(PostResponse.from(savedPost)));
     }
-    */
 
     @GetMapping(value = "/posts", params = "hashtag")
     @Operation(

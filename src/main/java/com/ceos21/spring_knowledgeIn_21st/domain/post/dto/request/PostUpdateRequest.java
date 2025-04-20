@@ -8,15 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 public record PostUpdateRequest(
-        @NotBlank
+        
         String title,
-
-        @NotBlank
-        String content,
-
-        @NotNull
-        Long userId,
-
-        List<String> hashtags,
-        List<String> imageUrls
+        String content
 ){}

@@ -72,25 +72,20 @@ public class PostService {
      * (특정) 게시글 수정
      * */
     @Transactional
-    public void updatePost(Long postId, PostUpdateRequest request) {
+    public Post updatePost(Long postId, PostUpdateRequest request, Long userId) {
         // 게시글 조회
         Post post = postRepository.findById(postId)
                 .orElseThrow(()-> new CustomException(POST_NOT_FOUND));
 
         // 게시글 작성자와 수정 요청자 일치 확인
-        if (!post.getUser().getId().equals(request.userId())) {
+        if (!post.getUser().getId().equals(userId)) {
             throw new CustomException(POST_ACCESS_DENIED);
         }
 
         // 제목, 내용 수정
         post.update(request.title(), request.content());
 
-        //기존 이미지 삭제 및 새 이미지 저장
-        imageRepository.deleteByPost(post);
-        imageService.saveImageUrls(post, request.imageUrls());
-
-        // 새 해시태그 저장
-        postHashtagService.saveHashtag(post, request.hashtags());
+        return post;
     }
 
     /**
@@ -128,9 +123,6 @@ public class PostService {
         // 해시태그가 존재하는지 확인
         Hashtag hashtag = hashtagRepository.findByContent(hashtagContent)
                 .orElseThrow(() -> new CustomException(HASHTAG_NOT_FOUND));
-
-        System.out.println("🔍 hashtagContent = " + hashtagContent);
-        System.out.println("🔍 hashtag.id = " + hashtag.getId());
 
         List<Post> posts = postHashtagRepository.findByHashtag(hashtag).stream()
                 .map(PostHashtag::getPost)
