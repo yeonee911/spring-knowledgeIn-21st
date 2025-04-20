@@ -1,5 +1,7 @@
 package com.ceos21.spring_knowledgeIn_21st.domain.post.application;
 
+import com.ceos21.spring_knowledgeIn_21st.domain.hashtag.dao.HashtagRepository;
+import com.ceos21.spring_knowledgeIn_21st.domain.hashtag.domain.Hashtag;
 import com.ceos21.spring_knowledgeIn_21st.domain.image.application.ImageService;
 import com.ceos21.spring_knowledgeIn_21st.domain.image.dao.ImageRepository;
 import com.ceos21.spring_knowledgeIn_21st.domain.post.dao.PostRepository;
@@ -7,6 +9,8 @@ import com.ceos21.spring_knowledgeIn_21st.domain.post.domain.Post;
 import com.ceos21.spring_knowledgeIn_21st.domain.post.dto.request.PostAddRequest;
 import com.ceos21.spring_knowledgeIn_21st.domain.post.dto.request.PostUpdateRequest;
 import com.ceos21.spring_knowledgeIn_21st.domain.postHashtag.application.PostHashtagService;
+import com.ceos21.spring_knowledgeIn_21st.domain.postHashtag.dao.PostHashtagRepository;
+import com.ceos21.spring_knowledgeIn_21st.domain.postHashtag.domain.PostHashtag;
 import com.ceos21.spring_knowledgeIn_21st.domain.user.dao.UserRepository;
 import com.ceos21.spring_knowledgeIn_21st.domain.user.domain.User;
 import com.ceos21.spring_knowledgeIn_21st.global.exception.CustomException;
@@ -15,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.ceos21.spring_knowledgeIn_21st.global.exception.ErrorCode.*;
 
@@ -28,6 +33,8 @@ public class PostService {
     private final PostHashtagService postHashtagService;
     private final ImageService imageService;
     private final ImageRepository imageRepository;
+    private final PostHashtagRepository postHashtagRepository;
+    private final HashtagRepository hashtagRepository;
 
     /**
      * 게시글 추가
@@ -65,25 +72,20 @@ public class PostService {
      * (특정) 게시글 수정
      * */
     @Transactional
-    public void updatePost(Long postId, PostUpdateRequest request) {
+    public Post updatePost(Long postId, PostUpdateRequest request, Long userId) {
         // 게시글 조회
         Post post = postRepository.findById(postId)
                 .orElseThrow(()-> new CustomException(POST_NOT_FOUND));
 
         // 게시글 작성자와 수정 요청자 일치 확인
-        if (!post.getUser().getId().equals(request.userId())) {
+        if (!post.getUser().getId().equals(userId)) {
             throw new CustomException(POST_ACCESS_DENIED);
         }
 
         // 제목, 내용 수정
         post.update(request.title(), request.content());
 
-        //기존 이미지 삭제 및 새 이미지 저장
-        imageRepository.deleteByPost(post);
-        imageService.saveImageUrls(post, request.imageUrls());
-
-        // 새 해시태그 저장
-        postHashtagService.saveHashtag(post, request.hashtags());
+        return post;
     }
 
     /**
@@ -100,6 +102,15 @@ public class PostService {
             throw new CustomException(POST_ACCESS_DENIED);
         }
 
+        List<PostHashtag> postHashtags = post.getPostHashtags();
+        for(PostHashtag postHashtag : postHashtags) {
+            Hashtag hashtag = postHashtag.getHashtag();
+            hashtag.decreasePostCount();
+            if (hashtag.getPostCount() == 0) {
+                hashtagRepository.delete(hashtag);
+            }
+        }
+
         postRepository.delete(post);
     }
 
@@ -108,4 +119,14 @@ public class PostService {
     /**
      * (특정) 해시태그를 통한 게시글 조회
      * */
+    public List<Post> findPostByHashtag(String hashtagContent) {
+        // 해시태그가 존재하는지 확인
+        Hashtag hashtag = hashtagRepository.findByContent(hashtagContent)
+                .orElseThrow(() -> new CustomException(HASHTAG_NOT_FOUND));
+
+        List<Post> posts = postHashtagRepository.findByHashtag(hashtag).stream()
+                .map(PostHashtag::getPost)
+                .collect(Collectors.toList());
+        return posts;
+    }
 }

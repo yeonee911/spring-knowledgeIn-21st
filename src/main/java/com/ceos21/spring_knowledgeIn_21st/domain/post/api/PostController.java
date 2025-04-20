@@ -39,40 +39,68 @@ public class PostController {
                 .body(ApiResponse.success(PostResponse.from(savedPost)));
     }
 
-    /*
-    @Operation(summary = "게시글 수정", description = "기존 게시글을 수정합니다")
-    @PatchMapping("/posts/{postId}")
-    public ResponseEntity<PostResponse> updatePost(@PathVariable Long postId, @RequestBody PostUpdateRequest request) {
-        postService.updatePost(postId, request);
-        PostResponse response = new PostResponse(postId, "게시글이 수정되었습니다.", true);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
-
-    @Operation(summary = "게시글 전체 조회", description = "등록된 전체 게시글을 조회합니다")
     @GetMapping("/posts")
-    public ResponseEntity<List<PostResponse>> getAllPosts() {
+    @Operation(
+            summary = "게시글 전체 조회",
+            description = "등록된 전체 게시글을 조회합니다"
+    )
+    public ResponseEntity<ApiResponse<List<PostResponse>>> getAllPosts() {
         List<Post> posts = postService.findPosts(); // 모든 게시글 가져오기
         List<PostResponse> response = posts.stream()
-                .map(PostResponse::new) // 각 Post를 PostAddResponse로 변환
+                .map(PostResponse::from) // 각 Post를 PostAddResponse로 변환
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 
     @Operation(summary = "(특정) 게시글 조회", description = "등록된 하나의 게시글을 조회합니다")
     @GetMapping("/posts/{postId}")
-    public ResponseEntity<PostResponse> getPost(@PathVariable Long postId) {
+    public ResponseEntity<ApiResponse<PostResponse>> getPost(@PathVariable Long postId) {
         Post post = postService.findPostById(postId);
-        PostResponse response = new PostResponse(post);
-        return ResponseEntity.ok(response);
+        PostResponse response = PostResponse.from(post);
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 
-    @Operation(summary = "(특정) 게시글 삭제", description = "등록된 하나의 게시글을 삭제합니다")
     @DeleteMapping("/posts/{postId}")
-    public ResponseEntity<PostResponse> deletePost(@PathVariable Long postId, @RequestBody PostAddRequest request) {   // Spring Security의 @AuthenticationPrincipal 사용 예정
-        postService.deletePost(postId, request.userId());
-        PostResponse response = new PostResponse(postId, "게시글이 삭제되었습니다.", true);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+    @Operation(summary = "(특정) 게시글 삭제", description = "등록된 하나의 게시글을 삭제합니다")
+    @SecurityRequirement(name = "Authorization")
+    public ResponseEntity<ApiResponse<Void>> deletePost(
+            @PathVariable Long postId,
+            @AuthenticationPrincipal UserDetailsImpl userDetailsImpl
+            ) {
+        postService.deletePost(postId, userDetailsImpl.getUserId());
+        return ResponseEntity
+                .ok(ApiResponse.success(null)); // 200 OK + body 포함
+
     }
-    */
+
+    @PatchMapping("/posts/{postId}")
+    @SecurityRequirement(name = "Authorization")
+    @Operation(
+            summary = "게시글 수정",
+            description = "게시글의 제목과 내용을 수정합니다"
+    )
+    public ResponseEntity<ApiResponse<PostResponse>> updatePost(
+            @PathVariable Long postId,
+            @RequestBody PostUpdateRequest request,
+            @AuthenticationPrincipal UserDetailsImpl userDetailsImpl
+    ) {
+        Post savedPost = postService.updatePost(postId, request, userDetailsImpl.getUserId());
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResponse.success(PostResponse.from(savedPost)));
+    }
+
+    @GetMapping(value = "/posts", params = "hashtag")
+    @Operation(
+            summary = "해시태그를 통한 게시글 조회",
+            description = "해당 해시태그를 가진 게시글을 모두 조회합니다"
+    )
+    public ResponseEntity<ApiResponse<List<PostResponse>>> getPostsByHashtag(@RequestParam String hashtag) {
+        List<Post> posts = postService.findPostByHashtag(hashtag);
+        List<PostResponse> response = posts.stream()
+                .map(PostResponse::from)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
 }
