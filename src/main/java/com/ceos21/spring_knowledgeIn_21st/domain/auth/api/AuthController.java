@@ -1,5 +1,6 @@
 package com.ceos21.spring_knowledgeIn_21st.domain.auth.api;
 
+import com.ceos21.spring_knowledgeIn_21st.domain.auth.dto.response.RefreshResponse;
 import com.ceos21.spring_knowledgeIn_21st.domain.auth.dto.response.SigninResponse;
 import com.ceos21.spring_knowledgeIn_21st.domain.user.application.UserService;
 import com.ceos21.spring_knowledgeIn_21st.domain.auth.dto.request.SigninRequest;
@@ -44,5 +45,12 @@ public class AuthController {
     )
     @PostMapping("/signin")
     public void signin(@RequestBody SigninRequest request) {
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<ApiResponse<RefreshResponse>> refresh(
+            @RequestHeader("Refresh-Token") String refreshToken) {
+        String accessToken = userService.reissue(refreshToken);
+        return ResponseEntity.ok(ApiResponse.success(new RefreshResponse(accessToken)));
     }
 }

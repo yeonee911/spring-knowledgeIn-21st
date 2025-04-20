@@ -27,6 +27,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     // 로그인 요청 처리 (POST /api/auth/signin)
     @Override
@@ -62,6 +63,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         String accessToken = jwtUtil.createAccessToken(email, roles);
         String refreshToken = jwtUtil.createRefreshToken(email);
+
+        refreshTokenRepository.save(email, refreshToken);
 
         ApiResponse<Map<String, String>> responseBody = new ApiResponse<>(
                 "SUCCESS",

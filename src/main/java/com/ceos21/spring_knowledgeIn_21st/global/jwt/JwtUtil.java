@@ -1,5 +1,7 @@
 package com.ceos21.spring_knowledgeIn_21st.global.jwt;
 
+import com.ceos21.spring_knowledgeIn_21st.global.exception.CustomException;
+import com.ceos21.spring_knowledgeIn_21st.global.exception.ErrorCode;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -62,25 +64,33 @@ public class JwtUtil {
 
     public boolean validateToken(String token) {
         try {
+            token = stripTokenPrefix(token);
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch (SecurityException | MalformedJwtException | SignatureException e) {
-            log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
+            throw new CustomException(ErrorCode.INVALID_SIGNATURE);
         } catch (ExpiredJwtException e) {
-            log.error("Expired JWT accessToken, 만료된 JWT accessToken 입니다.");
+            throw new CustomException(ErrorCode.EXPIRED_TOKEN);
         } catch (UnsupportedJwtException e) {
-            log.error("Unsupported JWT accessToken, 지원되지 않는 JWT 토큰 입니다.");
+            throw new CustomException(ErrorCode.UNSUPRORTED_TOKEN);
         } catch (IllegalArgumentException e) {
-            log.error("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
+            throw new CustomException(ErrorCode.INVALID_TOKEN);
         }
-        return false;
     }
 
     public Claims getUserInfoFromToken(String token) {
+        token = stripTokenPrefix(token);
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    public String stripTokenPrefix(String token) {
+        if (StringUtils.hasText(token) && token.startsWith(BEARER_PREFIX)) {
+            return token.substring(BEARER_PREFIX_LENGTH);
+        }
+        return token;
     }
 }

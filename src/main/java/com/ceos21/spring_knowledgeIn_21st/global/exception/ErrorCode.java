@@ -19,7 +19,15 @@ public enum ErrorCode {
 
     // UserError
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "User not exists"),
-    DUPLICATE_EMAIL(HttpStatus.CONFLICT, "Email already exists")
+    DUPLICATE_EMAIL(HttpStatus.CONFLICT, "Email already exists"),
+
+    // TokenError
+    INVALID_SIGNATURE(HttpStatus.UNAUTHORIZED, "Invalid JWT signature"),
+    EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "Expired JWT token"),
+    UNSUPRORTED_TOKEN(HttpStatus.UNAUTHORIZED, "Unsupported JWT token"),
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "Invalid JWT token"),
+    INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "Refresh token is invalid or mismatched"),
+    REFRESH_TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "Refresh token not found in server")
     ;
 
     private final HttpStatus status;

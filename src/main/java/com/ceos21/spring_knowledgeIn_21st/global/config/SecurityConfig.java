@@ -1,9 +1,6 @@
 package com.ceos21.spring_knowledgeIn_21st.global.config;
 
-import com.ceos21.spring_knowledgeIn_21st.global.jwt.JwtAuthenticationFilter;
-import com.ceos21.spring_knowledgeIn_21st.global.jwt.JwtAuthorizationFilter;
-import com.ceos21.spring_knowledgeIn_21st.global.jwt.JwtUtil;
-import com.ceos21.spring_knowledgeIn_21st.global.jwt.RequestBodyCachingFilter;
+import com.ceos21.spring_knowledgeIn_21st.global.jwt.*;
 import com.ceos21.spring_knowledgeIn_21st.global.security.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -44,9 +41,9 @@ public class SecurityConfig {
 
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager authenticationManager, RefreshTokenRepository refreshTokenRepository) throws Exception {
 
-        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtUtil);
+        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtUtil, refreshTokenRepository);
         jwtAuthenticationFilter.setFilterProcessesUrl("/api/auth/signin");
 
         http.csrf(csrf -> csrf.disable())
@@ -58,7 +55,9 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/swagger-resources/**",
                                 "/api/auth/signup",
-                                "/api/auth/signin").permitAll()
+                                "/api/auth/signin",
+                                "/api/auth/refresh"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 // 1) 캐싱 필터를 인증 필터(UsernamePasswordAuthenticationFilter) 앞에 등록
