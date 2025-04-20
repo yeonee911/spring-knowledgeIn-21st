@@ -27,7 +27,7 @@ public class JwtUtil {
     public static final String AUTHORIZATION_KEY = "auth";  // 사용자 권한 값의 KEY
     public static final String BEARER_PREFIX = "Bearer ";  // 토큰 식별자
     private static final int BEARER_PREFIX_LENGTH = 7;
-    private final long ACCESS_EXPIRATION_TIME = 1000 * 60 * 60L;  // Access Token 만료시간 : 1시간
+    private final long ACCESS_EXPIRATION_TIME = 1000 * 60 * 10L;  // Access Token 만료시간 : 10분
     private final long REFRESH_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 7L;  // Refresh Token 만료시간 : 7일
 
     @PostConstruct
