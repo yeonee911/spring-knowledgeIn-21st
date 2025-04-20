@@ -39,6 +39,20 @@ public class PostController {
                 .body(ApiResponse.success(PostResponse.from(savedPost)));
     }
 
+    @GetMapping("/posts")
+    @Operation(
+            summary = "게시글 전체 조회",
+            description = "등록된 전체 게시글을 조회합니다"
+    )
+    public ResponseEntity<ApiResponse<List<PostResponse>>> getAllPosts() {
+        List<Post> posts = postService.findPosts(); // 모든 게시글 가져오기
+        List<PostResponse> response = posts.stream()
+                .map(PostResponse::from) // 각 Post를 PostAddResponse로 변환
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
     /*
     @Operation(summary = "게시글 수정", description = "기존 게시글을 수정합니다")
     @PatchMapping("/posts/{postId}")
@@ -48,16 +62,6 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @Operation(summary = "게시글 전체 조회", description = "등록된 전체 게시글을 조회합니다")
-    @GetMapping("/posts")
-    public ResponseEntity<List<PostResponse>> getAllPosts() {
-        List<Post> posts = postService.findPosts(); // 모든 게시글 가져오기
-        List<PostResponse> response = posts.stream()
-                .map(PostResponse::new) // 각 Post를 PostAddResponse로 변환
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(response);
-    }
 
     @Operation(summary = "(특정) 게시글 조회", description = "등록된 하나의 게시글을 조회합니다")
     @GetMapping("/posts/{postId}")

@@ -24,7 +24,7 @@ public class Hashtag {
     private String content;
 
     @Column(name = "post_count")
-    private int postCount;
+    private Integer postCount;
 
     @OneToMany(mappedBy = "hashtag", cascade = CascadeType.ALL)
     private List<PostHashtag> postHashtags = new ArrayList<>();
