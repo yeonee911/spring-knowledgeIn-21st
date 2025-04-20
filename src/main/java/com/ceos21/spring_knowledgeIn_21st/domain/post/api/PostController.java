@@ -53,6 +53,14 @@ public class PostController {
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
+    @Operation(summary = "(특정) 게시글 조회", description = "등록된 하나의 게시글을 조회합니다")
+    @GetMapping("/posts/{postId}")
+    public ResponseEntity<ApiResponse<PostResponse>> getPost(@PathVariable Long postId) {
+        Post post = postService.findPostById(postId);
+        PostResponse response = PostResponse.from(post);
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
     /*
     @Operation(summary = "게시글 수정", description = "기존 게시글을 수정합니다")
     @PatchMapping("/posts/{postId}")
@@ -63,13 +71,7 @@ public class PostController {
     }
 
 
-    @Operation(summary = "(특정) 게시글 조회", description = "등록된 하나의 게시글을 조회합니다")
-    @GetMapping("/posts/{postId}")
-    public ResponseEntity<PostResponse> getPost(@PathVariable Long postId) {
-        Post post = postService.findPostById(postId);
-        PostResponse response = new PostResponse(post);
-        return ResponseEntity.ok(response);
-    }
+
 
     @Operation(summary = "(특정) 게시글 삭제", description = "등록된 하나의 게시글을 삭제합니다")
     @DeleteMapping("/posts/{postId}")
