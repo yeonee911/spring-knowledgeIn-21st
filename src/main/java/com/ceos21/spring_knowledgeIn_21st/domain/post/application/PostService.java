@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.ceos21.spring_knowledgeIn_21st.global.exception.ErrorCode.*;
 
@@ -123,4 +124,17 @@ public class PostService {
     /**
      * (특정) 해시태그를 통한 게시글 조회
      * */
+    public List<Post> findPostByHashtag(String hashtagContent) {
+        // 해시태그가 존재하는지 확인
+        Hashtag hashtag = hashtagRepository.findByContent(hashtagContent)
+                .orElseThrow(() -> new CustomException(HASHTAG_NOT_FOUND));
+
+        System.out.println("🔍 hashtagContent = " + hashtagContent);
+        System.out.println("🔍 hashtag.id = " + hashtag.getId());
+
+        List<Post> posts = postHashtagRepository.findByHashtag(hashtag).stream()
+                .map(PostHashtag::getPost)
+                .collect(Collectors.toList());
+        return posts;
+    }
 }

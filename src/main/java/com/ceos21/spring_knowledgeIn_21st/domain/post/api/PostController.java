@@ -82,10 +82,18 @@ public class PostController {
         PostResponse response = new PostResponse(postId, "게시글이 수정되었습니다.", true);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
-
-
-
-
-
     */
+
+    @GetMapping(value = "/posts", params = "hashtag")
+    @Operation(
+            summary = "해시태그를 통한 게시글 조회",
+            description = "해당 해시태그를 가진 게시글을 모두 조회합니다"
+    )
+    public ResponseEntity<ApiResponse<List<PostResponse>>> getPostsByHashtag(@RequestParam String hashtag) {
+        List<Post> posts = postService.findPostByHashtag(hashtag);
+        List<PostResponse> response = posts.stream()
+                .map(PostResponse::from)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
 }
