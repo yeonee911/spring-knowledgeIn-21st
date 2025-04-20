@@ -1,5 +1,7 @@
 package com.ceos21.spring_knowledgeIn_21st.domain.post.application;
 
+import com.ceos21.spring_knowledgeIn_21st.domain.hashtag.dao.HashtagRepository;
+import com.ceos21.spring_knowledgeIn_21st.domain.hashtag.domain.Hashtag;
 import com.ceos21.spring_knowledgeIn_21st.domain.image.application.ImageService;
 import com.ceos21.spring_knowledgeIn_21st.domain.image.dao.ImageRepository;
 import com.ceos21.spring_knowledgeIn_21st.domain.post.dao.PostRepository;
@@ -7,6 +9,8 @@ import com.ceos21.spring_knowledgeIn_21st.domain.post.domain.Post;
 import com.ceos21.spring_knowledgeIn_21st.domain.post.dto.request.PostAddRequest;
 import com.ceos21.spring_knowledgeIn_21st.domain.post.dto.request.PostUpdateRequest;
 import com.ceos21.spring_knowledgeIn_21st.domain.postHashtag.application.PostHashtagService;
+import com.ceos21.spring_knowledgeIn_21st.domain.postHashtag.dao.PostHashtagRepository;
+import com.ceos21.spring_knowledgeIn_21st.domain.postHashtag.domain.PostHashtag;
 import com.ceos21.spring_knowledgeIn_21st.domain.user.dao.UserRepository;
 import com.ceos21.spring_knowledgeIn_21st.domain.user.domain.User;
 import com.ceos21.spring_knowledgeIn_21st.global.exception.CustomException;
@@ -28,6 +32,8 @@ public class PostService {
     private final PostHashtagService postHashtagService;
     private final ImageService imageService;
     private final ImageRepository imageRepository;
+    private final PostHashtagRepository postHashtagRepository;
+    private final HashtagRepository hashtagRepository;
 
     /**
      * 게시글 추가
@@ -98,6 +104,15 @@ public class PostService {
         // 게시글 작성자와 삭제 요청자 일치 확인
         if (!post.getUser().getId().equals(userId)) {
             throw new CustomException(POST_ACCESS_DENIED);
+        }
+
+        List<PostHashtag> postHashtags = post.getPostHashtags();
+        for(PostHashtag postHashtag : postHashtags) {
+            Hashtag hashtag = postHashtag.getHashtag();
+            hashtag.decreasePostCount();
+            if (hashtag.getPostCount() == 0) {
+                hashtagRepository.delete(hashtag);
+            }
         }
 
         postRepository.delete(post);

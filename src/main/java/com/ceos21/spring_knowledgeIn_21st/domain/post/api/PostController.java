@@ -61,6 +61,19 @@ public class PostController {
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
+    @DeleteMapping("/posts/{postId}")
+    @Operation(summary = "(특정) 게시글 삭제", description = "등록된 하나의 게시글을 삭제합니다")
+    @SecurityRequirement(name = "Authorization")
+    public ResponseEntity<ApiResponse<Void>> deletePost(
+            @PathVariable Long postId,
+            @AuthenticationPrincipal UserDetailsImpl userDetailsImpl
+            ) {
+        postService.deletePost(postId, userDetailsImpl.getUserId());
+        return ResponseEntity
+                .ok(ApiResponse.success(null)); // 200 OK + body 포함
+
+    }
+
     /*
     @Operation(summary = "게시글 수정", description = "기존 게시글을 수정합니다")
     @PatchMapping("/posts/{postId}")
@@ -73,12 +86,6 @@ public class PostController {
 
 
 
-    @Operation(summary = "(특정) 게시글 삭제", description = "등록된 하나의 게시글을 삭제합니다")
-    @DeleteMapping("/posts/{postId}")
-    public ResponseEntity<PostResponse> deletePost(@PathVariable Long postId, @RequestBody PostAddRequest request) {   // Spring Security의 @AuthenticationPrincipal 사용 예정
-        postService.deletePost(postId, request.userId());
-        PostResponse response = new PostResponse(postId, "게시글이 삭제되었습니다.", true);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
+
     */
 }

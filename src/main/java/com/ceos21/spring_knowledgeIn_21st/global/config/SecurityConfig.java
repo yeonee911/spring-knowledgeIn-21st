@@ -51,10 +51,10 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/posts").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/posts").authenticated()
-                        .requestMatchers(HttpMethod.PATCH, "/posts").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/posts").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/posts/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/posts/**").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "/posts/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/posts/**").authenticated()
                         .requestMatchers("/",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
