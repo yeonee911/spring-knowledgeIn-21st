@@ -1,6 +1,7 @@
 package com.ceos21.spring_knowledgeIn_21st.domain.postHashtag.application;
 
 import com.ceos21.spring_knowledgeIn_21st.domain.hashtag.application.HashtagService;
+import com.ceos21.spring_knowledgeIn_21st.domain.hashtag.dao.HashtagRepository;
 import com.ceos21.spring_knowledgeIn_21st.domain.hashtag.domain.Hashtag;
 import com.ceos21.spring_knowledgeIn_21st.domain.post.application.PostService;
 import com.ceos21.spring_knowledgeIn_21st.domain.post.domain.Post;
@@ -16,27 +17,26 @@ import java.util.List;
 @Transactional
 @Service
 public class PostHashtagService {
-    private final HashtagService hashtagService;
     private final PostHashtagRepository postHashtagRepository;
+    private final HashtagRepository hashtagRepository;
 
     public void saveHashtag(Post post, List<String>hashtags) {
-        if (hashtags == null || hashtags.isEmpty()) return;
+        for (String content : hashtags) {
+            Hashtag hashtag = hashtagRepository.findByContent(content)
+                    .orElseGet(()-> hashtagRepository.save(
+                            Hashtag.builder()
+                                    .content(content)
+                                    .postCount(0)
+                                    .build()
+                    ));
+            hashtag.increasePostCount();
+            PostHashtag postHashtag = PostHashtag.builder()
+                    .post(post)
+                    .hashtag(hashtag)
+                    .build();
 
-        hashtags.stream()
-                .map(content -> hashtagService.findByContent(content)
-                        .orElseGet(() -> hashtagService.save(
-                                Hashtag.builder()
-                                        .content(content)
-                                        .build()
-                        )))
-                .forEach(hashtag -> {
-                    PostHashtag postHashtag = PostHashtag.builder()
-                            .post(post)
-                            .hashtag(hashtag)
-                            .build();
-
-                    post.addPostHashtag(postHashtag);
-                    postHashtagRepository.save(postHashtag);
-                });
+            post.addPostHashtag(postHashtag);
+            postHashtagRepository.save(postHashtag);
+        }
     }
 }
