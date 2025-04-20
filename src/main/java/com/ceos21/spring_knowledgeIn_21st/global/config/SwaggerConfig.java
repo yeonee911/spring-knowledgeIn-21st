@@ -18,7 +18,8 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
         info = @Info(
                 title = "네이버 지식인 API 명세서",
                 description = "ceos 21 BE : 네이버 지식인 클론 코딩"
-        )
+        ),
+        security = @io.swagger.v3.oas.annotations.security.SecurityRequirement(name = "Authorization")
 )
 
 @Configuration
@@ -26,29 +27,25 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 public class SwaggerConfig {
     @Bean
     public OpenAPI openAPI() {
-        return new OpenAPI().addSecurityItem(securityRequirement())
-                .components(authSetting())
-                .components(new Components()
+        Components components = new Components()
+                .addSecuritySchemes("Authorization", new SecurityScheme()
+                        .type(SecurityScheme.Type.HTTP)
+                        .scheme("bearer")
+                        .bearerFormat("JWT")
+                        .in(SecurityScheme.In.HEADER)
+                        .name("Authorization"))
                 .addParameters("Refresh-Token", new Parameter()
                         .in(ParameterIn.HEADER.toString())
                         .schema(new StringSchema())
                         .name("Refresh-Token")
-                        .description("리프레시 토큰")));
-    }
+                        .description("리프레시 토큰"));
 
-    private Components authSetting() {
-        return new Components()
-                .addSecuritySchemes(
-                        "Bearer Authorization",
-                        new SecurityScheme()
-                                .type(SecurityScheme.Type.HTTP)
-                                .scheme("bearer")
-                                .bearerFormat("JWT")
-                                .in(SecurityScheme.In.HEADER)
-                                .name(AUTHORIZATION));
+        return new OpenAPI()
+                .addSecurityItem(new SecurityRequirement().addList("Authorization"))
+                .components(components);
     }
 
     private SecurityRequirement securityRequirement() {
-        return new SecurityRequirement().addList(AUTHORIZATION);
+        return new SecurityRequirement().addList("Authorization");
     }
 }

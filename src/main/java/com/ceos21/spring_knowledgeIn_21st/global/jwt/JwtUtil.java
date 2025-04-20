@@ -36,7 +36,7 @@ public class JwtUtil {
     }
 
     public String createAccessToken(String email, String role) {
-        return BEARER_PREFIX + Jwts.builder()
+        return Jwts.builder()
                 .setSubject(email)
                 .claim(AUTHORIZATION_KEY, role)
                 .setIssuedAt(new Date())
@@ -46,7 +46,7 @@ public class JwtUtil {
     }
 
     public String createRefreshToken(String email) {
-        return BEARER_PREFIX + Jwts.builder()
+        return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + REFRESH_EXPIRATION_TIME))
@@ -64,7 +64,6 @@ public class JwtUtil {
 
     public boolean validateToken(String token) {
         try {
-            token = stripTokenPrefix(token);
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch (SecurityException | MalformedJwtException | SignatureException e) {
@@ -79,18 +78,10 @@ public class JwtUtil {
     }
 
     public Claims getUserInfoFromToken(String token) {
-        token = stripTokenPrefix(token);
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-    }
-
-    public String stripTokenPrefix(String token) {
-        if (StringUtils.hasText(token) && token.startsWith(BEARER_PREFIX)) {
-            return token.substring(BEARER_PREFIX_LENGTH);
-        }
-        return token;
     }
 }

@@ -33,15 +33,14 @@ public class PostService {
      * 게시글 추가
      * */
     @Transactional
-    public Post savePost(PostAddRequest request) {
+    public Post savePost(PostAddRequest request, Long userId) {
         // 작성자 조회
-        User user = userRepository.findById(request.userId())
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        // 게시글 저장
         Post savedPost = postRepository.save(request.toEntity(user));
-
         // 이미지 저장
         imageService.saveImageUrls(savedPost, request.imageUrls());
-
         // 해쉬 태그 저장
         postHashtagService.saveHashtag(savedPost, request.hashtags());
 

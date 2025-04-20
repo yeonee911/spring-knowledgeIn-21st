@@ -14,9 +14,6 @@ public record PostAddRequest (
     @NotBlank
     String content,
 
-    @NotNull
-    Long userId,
-
     List<String> hashtags,
     List<String> imageUrls
 ){

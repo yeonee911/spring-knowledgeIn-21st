@@ -42,9 +42,12 @@ public class UserDetailsImpl implements UserDetails {
         return user.getEmail(); // 로그인 ID로 email 사용
     }
 
-
     public UserRole getRole() {
         return user.getRole();
+    }
+
+    public Long getUserId() {
+        return user.getId();
     }
 
     @Override

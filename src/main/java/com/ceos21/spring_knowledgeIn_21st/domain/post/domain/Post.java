@@ -15,11 +15,9 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Builder
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 public class Post extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,13 +54,21 @@ public class Post extends BaseEntity {
         this.images.add(image);
     }
     public void addPostHashtag(PostHashtag postHashtag) {
-        if (this.postHashtags == null) {
-            this.postHashtags = new ArrayList<>();  // 안전하게 빈 리스트로 초기화
-        }
         this.postHashtags.add(postHashtag);
+        postHashtag.setPost(this);
     }
     public void update(String title, String content) {
         this.title = title;
         this.content = content;
+    }
+
+    @Builder
+    public Post(String title, String content, User user) {
+        this.title = title;
+        this.content = content;
+        this.user = user;
+        this.comments = new ArrayList<>();
+        this.images = new ArrayList<>();
+        this.postHashtags = new ArrayList<>();
     }
 }

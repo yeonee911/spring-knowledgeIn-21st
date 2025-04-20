@@ -23,6 +23,33 @@ public class Hashtag {
     @NotBlank
     private String content;
 
+    @Column(name = "post_count")
+    private int postCount;
+
     @OneToMany(mappedBy = "hashtag", cascade = CascadeType.ALL)
     private List<PostHashtag> postHashtags = new ArrayList<>();
+
+    @Builder
+    public Hashtag(String content) {
+        this.content = content;
+        this.postCount = 0;
+        this.postHashtags = new ArrayList<>();
+    }
+
+    public void addPostHashtag(PostHashtag postHashtag) {
+        this.postHashtags.add(postHashtag);
+        postHashtag.setHashtag(this);
+    }
+
+    public void increasePostCount() {
+        this.postCount++;
+    }
+
+    public void decreasePostCount() {
+        this.postCount--;
+    }
+
+    public boolean isUnused() {
+        return this.postCount <= 0;
+    }
 }
