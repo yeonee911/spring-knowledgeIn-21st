@@ -56,10 +56,7 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<ApiResponse<Void>> logout(HttpServletRequest request) {
         String token = jwtUtil.getJwtFromHeader(request);   // "Authorization" 헤더에서 access token 추출
-        jwtUtil.validateToken(token);   // 만료되었으면 예외 던짐
-
-        String email = jwtUtil.getUserInfoFromToken(token).getSubject();
-        refreshTokenRepository.delete(email);   // 리프레시 토큰 삭제
+        userService.logout(token);
 
         return  ResponseEntity
                 .status(HttpStatus.NO_CONTENT)

@@ -50,4 +50,13 @@ public class UserService {
 
         return jwtUtil.createAccessToken(email, UserRole.USER.name());
     }
+
+    @Transactional
+    public void logout(String refreshToken) {
+        jwtUtil.validateToken(refreshToken);   // 만료되었으면 예외 던짐
+
+        String email = jwtUtil.getUserInfoFromToken(refreshToken).getSubject();
+        refreshTokenRepository.delete(email);   // 리프레시 토큰 삭제
+
+    }
 }
