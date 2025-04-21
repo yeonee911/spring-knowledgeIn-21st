@@ -67,4 +67,8 @@ public class Answer extends BaseEntity {
     public void update(String content){
         this.content = content;
     }
+
+    public void setPost(Post post) {
+        this.post = post;
+    }
 }

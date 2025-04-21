@@ -42,9 +42,9 @@ public class AnswerService {
             throw new CustomException(ErrorCode.CANNOT_ANSWER_OWN_POST);
         }
 
-        Answer savedAnswer = answerRepository.save(request.toEntity(user, post));
-
-        return savedAnswer;
+        Answer answer = request.toEntity(user);
+        post.addAnswer(answer);
+        return answerRepository.save(answer);
     }
 
     /**

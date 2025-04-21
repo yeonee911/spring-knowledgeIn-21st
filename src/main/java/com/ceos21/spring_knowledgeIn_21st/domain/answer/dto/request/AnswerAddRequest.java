@@ -9,11 +9,10 @@ public record AnswerAddRequest (
     @NotBlank
     String content
 ){
-    public Answer toEntity(User user, Post post) {
+    public Answer toEntity(User user) {
         return Answer.builder()
                 .content(content)
                 .user(user)
-                .post(post)
                 .build();
     }
 }
