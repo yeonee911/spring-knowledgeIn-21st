@@ -57,9 +57,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PATCH, "/posts/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/posts/**").authenticated()
 
-                        // answers
+                        // answers : 게시글 내 답변 추가/조회
+                        .requestMatchers(HttpMethod.GET, "/posts/*/answers").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/posts/*/answers").authenticated()
+                        // answers : 답변 단건 수정/삭제/조회
                         .requestMatchers(HttpMethod.GET, "/answers/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/answers/**").authenticated()
                         .requestMatchers(HttpMethod.PATCH, "/answers/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/answers/**").authenticated()
                         .requestMatchers("/",

@@ -13,6 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -49,5 +52,15 @@ public class AnswerService {
     public Answer findAnswerById(Long answerId) {
         return answerRepository.findById(answerId)
                 .orElseThrow(() -> new CustomException(ErrorCode.ANSWER_NOT_FOUND));
+    }
+
+    /**
+     * 답변 전체 조회
+     */
+    public List<Answer> findAllAnswers(Long postId) {
+        if (!postRepository.existsById(postId)) {
+            throw new CustomException(ErrorCode.POST_NOT_FOUND);
+        }
+        return answerRepository.findByPostId(postId);
     }
 }

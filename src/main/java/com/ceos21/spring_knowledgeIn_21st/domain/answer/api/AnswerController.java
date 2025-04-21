@@ -4,6 +4,7 @@ import com.ceos21.spring_knowledgeIn_21st.domain.answer.application.AnswerServic
 import com.ceos21.spring_knowledgeIn_21st.domain.answer.domain.Answer;
 import com.ceos21.spring_knowledgeIn_21st.domain.answer.dto.request.AnswerAddRequest;
 import com.ceos21.spring_knowledgeIn_21st.domain.answer.dto.response.AnswerDetailResponse;
+import com.ceos21.spring_knowledgeIn_21st.domain.answer.dto.response.AnswerSummaryResponse;
 import com.ceos21.spring_knowledgeIn_21st.global.common.ApiResponse;
 import com.ceos21.spring_knowledgeIn_21st.global.security.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,12 +15,34 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RequiredArgsConstructor
 @RestController
 public class AnswerController {
     private final AnswerService answerService;
 
-    @PostMapping("/{postId}/answers")
+    @GetMapping("/posts/{postId}/answers")
+    @Operation (
+            summary = "답변 전체 조회",
+            description = "게시글에 달린 모든 답변을 조회합니다"
+    )
+    public ResponseEntity<ApiResponse<List<AnswerSummaryResponse>>> getAllAnswers(
+            @PathVariable Long postId
+    ) {
+        List<Answer> answers = answerService.findAllAnswers(postId);
+        if (answers.isEmpty()) {
+            return ResponseEntity.ok(ApiResponse.success(List.of(), "등록된 답변이 없습니다."));
+        }
+        List<AnswerSummaryResponse> response = answers.stream()
+                .map(AnswerSummaryResponse::from)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+    @PostMapping("/posts/{postId}/answers")
     @SecurityRequirement(name = "Authorization")
     @Operation(
             summary = "답변 추가",
@@ -48,4 +71,5 @@ public class AnswerController {
         AnswerDetailResponse response = AnswerDetailResponse.from(answer);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
+
 }
