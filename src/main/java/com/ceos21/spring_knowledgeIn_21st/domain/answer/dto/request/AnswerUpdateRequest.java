@@ -9,12 +9,4 @@ import jakarta.validation.constraints.NotNull;
 public record AnswerUpdateRequest (
         @NotBlank
         String content
-){
-    public Answer toEntity(User user, Post post) {
-        return Answer.builder()
-                .content(content)
-                .user(user)
-                .post(post)
-                .build();
-    }
-}
+){}
