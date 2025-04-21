@@ -1,5 +1,6 @@
 package com.ceos21.spring_knowledgeIn_21st.domain.answer.domain;
 
+import com.ceos21.spring_knowledgeIn_21st.domain.post.domain.Post;
 import com.ceos21.spring_knowledgeIn_21st.global.common.BaseEntity;
 import com.ceos21.spring_knowledgeIn_21st.domain.comment.domain.Comment;
 import com.ceos21.spring_knowledgeIn_21st.domain.reaction.domain.Reaction;
@@ -12,7 +13,6 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Builder
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -24,16 +24,51 @@ public class Answer extends BaseEntity {
     private Long id;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id")
+    private Post post;
+
     @NotBlank
-    private String comment;
+    private String content;
+
+    @NotNull
+    @JoinColumn(name = "like_count")
+    private Integer likeCount = 0;
+
+    @NotNull
+    @JoinColumn(name = "dislike_count")
+    private Integer dislikeCount = 0;
+
+    @NotNull
+    @JoinColumn(name = "comment_count")
+    private Integer commentCount = 0;
 
     @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL)
     private List<Reaction> reactions = new ArrayList<>();
+
+    @Builder
+    public Answer(String content, User user, Post post) {
+        this.content = content;
+        this.user = user;
+        this.post = post;
+        this.likeCount = 0;
+        this.dislikeCount = 0;
+        this.commentCount = 0;
+    }
+
+    public void update(String content){
+        this.content = content;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
+    }
 }

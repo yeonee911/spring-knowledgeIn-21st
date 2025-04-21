@@ -1,5 +1,6 @@
 package com.ceos21.spring_knowledgeIn_21st.domain.post.domain;
 
+import com.ceos21.spring_knowledgeIn_21st.domain.answer.domain.Answer;
 import com.ceos21.spring_knowledgeIn_21st.global.common.BaseEntity;
 import com.ceos21.spring_knowledgeIn_21st.domain.postHashtag.domain.PostHashtag;
 import com.ceos21.spring_knowledgeIn_21st.domain.user.domain.User;
@@ -34,6 +35,9 @@ public class Post extends BaseEntity {
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<Answer> answers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Image> images = new ArrayList<>();
 
@@ -60,6 +64,11 @@ public class Post extends BaseEntity {
     public void update(String title, String content) {
         if (title != null) this.title = title;
         if (content != null) this.content = content;
+    }
+
+    public void addAnswer(Answer answer) {
+        this.answers.add(answer);
+        answer.setPost(this);
     }
 
     @Builder

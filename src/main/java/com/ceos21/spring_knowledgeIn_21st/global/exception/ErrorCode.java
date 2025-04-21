@@ -12,6 +12,7 @@ public enum ErrorCode {
     RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, "Resource not exists"),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error"),
     INVALID_ACCESS(HttpStatus.FORBIDDEN, "Invalid access"),
+    CONTENT_TOO_SHORT(HttpStatus.BAD_REQUEST, "내용은 최소 1자 이상이어야 합니다"),
 
     // PostError
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "Post not exists"),
@@ -23,6 +24,11 @@ public enum ErrorCode {
     // UserError
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "User not exists"),
     DUPLICATE_EMAIL(HttpStatus.CONFLICT, "Email already exists"),
+
+    // AnswerError
+    CANNOT_ANSWER_OWN_POST(HttpStatus.FORBIDDEN, "You cannot answer your own post."),
+    ANSWER_NOT_FOUND(HttpStatus.NOT_FOUND, "Answer not exists"),
+    ANSWER_ACCESS_DENIED(HttpStatus.FORBIDDEN, "Only the author is allowed to modify or delete this answer."),
 
     // TokenError
     INVALID_SIGNATURE(HttpStatus.UNAUTHORIZED, "Invalid JWT signature"),
