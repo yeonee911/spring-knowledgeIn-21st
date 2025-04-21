@@ -24,6 +24,9 @@ public enum ErrorCode {
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "User not exists"),
     DUPLICATE_EMAIL(HttpStatus.CONFLICT, "Email already exists"),
 
+    // AnswerError
+    CANNOT_ANSWER_OWN_POST(HttpStatus.FORBIDDEN, "You cannot answer your own post."),
+
     // TokenError
     INVALID_SIGNATURE(HttpStatus.UNAUTHORIZED, "Invalid JWT signature"),
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "Expired JWT token"),

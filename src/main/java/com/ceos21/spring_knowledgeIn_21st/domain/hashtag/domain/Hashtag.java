@@ -23,6 +23,7 @@ public class Hashtag {
     @NotBlank
     private String content;
 
+    @NotNull
     @Column(name = "post_count")
     private Integer postCount;
 
