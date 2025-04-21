@@ -79,4 +79,16 @@ public class AnswerService {
         answer.update(request.content());
         return answer;
     }
+
+    /**
+     * 답변 삭제
+     */
+    @Transactional
+    public void deleteAnswer(Long answerId, Long userId) {
+        Answer answer = findAnswerById(answerId);
+        if (!answer.getUser().getId().equals(userId)) {
+            throw new CustomException(ErrorCode.ANSWER_ACCESS_DENIED);
+        }
+        answerRepository.deleteById(answerId);
+    }
 }

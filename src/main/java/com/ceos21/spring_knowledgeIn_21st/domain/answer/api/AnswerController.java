@@ -74,6 +74,7 @@ public class AnswerController {
     }
 
     @PatchMapping("/answers/{answerId}")
+    @SecurityRequirement(name = "Authorization")
     @Operation(
             summary = "답변 수정",
             description = "답변을 수정합니다"
@@ -87,5 +88,20 @@ public class AnswerController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(ApiResponse.success(AnswerDetailResponse.from(savedAnswer), "답변이 수정되었습니다"));
+    }
+
+    @DeleteMapping("/answers/{answerId}")
+    @SecurityRequirement(name = "Authorization")
+    @Operation(
+            summary = "답변 삭제",
+            description = "답변을 삭제합니다"
+    )
+    public ResponseEntity<ApiResponse<Void>> deleteAnswer(
+            @PathVariable Long answerId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ){
+        answerService.deleteAnswer(answerId, userDetails.getUserId());
+        return ResponseEntity
+                .ok(ApiResponse.success(null, "답변이 삭제되었습니다"));
     }
 }
