@@ -3,6 +3,7 @@ package com.ceos21.spring_knowledgeIn_21st.domain.answer.api;
 import com.ceos21.spring_knowledgeIn_21st.domain.answer.application.AnswerService;
 import com.ceos21.spring_knowledgeIn_21st.domain.answer.domain.Answer;
 import com.ceos21.spring_knowledgeIn_21st.domain.answer.dto.request.AnswerAddRequest;
+import com.ceos21.spring_knowledgeIn_21st.domain.answer.dto.request.AnswerUpdateRequest;
 import com.ceos21.spring_knowledgeIn_21st.domain.answer.dto.response.AnswerDetailResponse;
 import com.ceos21.spring_knowledgeIn_21st.domain.answer.dto.response.AnswerSummaryResponse;
 import com.ceos21.spring_knowledgeIn_21st.global.common.ApiResponse;
@@ -72,4 +73,19 @@ public class AnswerController {
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
+    @PatchMapping("/answers/{answerId}")
+    @Operation(
+            summary = "답변 수정",
+            description = "답변을 수정합니다"
+    )
+    public ResponseEntity<ApiResponse<AnswerDetailResponse>> updateAnswer(
+            @PathVariable Long answerId,
+            @RequestBody AnswerUpdateRequest request,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        Answer savedAnswer = answerService.updateAnswer(answerId, request, userDetails.getUserId());
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResponse.success(AnswerDetailResponse.from(savedAnswer), "답변이 수정되었습니다"));
+    }
 }

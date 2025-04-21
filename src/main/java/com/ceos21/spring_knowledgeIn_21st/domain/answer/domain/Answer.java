@@ -63,4 +63,8 @@ public class Answer extends BaseEntity {
         this.dislikeCount = 0;
         this.commentCount = 0;
     }
+
+    public void update(String content){
+        this.content = content;
+    }
 }

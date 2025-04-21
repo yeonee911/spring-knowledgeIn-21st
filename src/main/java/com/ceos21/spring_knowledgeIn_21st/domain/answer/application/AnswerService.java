@@ -3,6 +3,7 @@ package com.ceos21.spring_knowledgeIn_21st.domain.answer.application;
 import com.ceos21.spring_knowledgeIn_21st.domain.answer.dao.AnswerRepository;
 import com.ceos21.spring_knowledgeIn_21st.domain.answer.domain.Answer;
 import com.ceos21.spring_knowledgeIn_21st.domain.answer.dto.request.AnswerAddRequest;
+import com.ceos21.spring_knowledgeIn_21st.domain.answer.dto.request.AnswerUpdateRequest;
 import com.ceos21.spring_knowledgeIn_21st.domain.post.dao.PostRepository;
 import com.ceos21.spring_knowledgeIn_21st.domain.post.domain.Post;
 import com.ceos21.spring_knowledgeIn_21st.domain.user.dao.UserRepository;
@@ -62,5 +63,20 @@ public class AnswerService {
             throw new CustomException(ErrorCode.POST_NOT_FOUND);
         }
         return answerRepository.findByPostId(postId);
+    }
+
+    /**
+     * 답변 수정
+     */
+    @Transactional
+    public Answer updateAnswer(Long answerId, AnswerUpdateRequest request, Long userId) {
+        Answer answer = answerRepository.findById(answerId)
+                .orElseThrow(() -> new CustomException(ErrorCode.ANSWER_NOT_FOUND));
+        if (!answer.getUser().getId().equals(userId)) {
+            throw new CustomException(ErrorCode.ANSWER_ACCESS_DENIED);
+        }
+
+        answer.update(request.content());
+        return answer;
     }
 }
