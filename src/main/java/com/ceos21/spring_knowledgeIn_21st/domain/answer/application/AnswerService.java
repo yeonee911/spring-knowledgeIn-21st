@@ -42,4 +42,12 @@ public class AnswerService {
 
         return savedAnswer;
     }
+
+    /**
+     * 답변 조회
+     */
+    public Answer findAnswerById(Long answerId) {
+        return answerRepository.findById(answerId)
+                .orElseThrow(() -> new CustomException(ErrorCode.ANSWER_NOT_FOUND));
+    }
 }

@@ -35,4 +35,17 @@ public class AnswerController {
                 .status(HttpStatus.CREATED)
                 .body(ApiResponse.success(AnswerDetailResponse.from(savedAnswer)));
     }
+
+    @GetMapping("/answers/{answerId}")
+    @Operation(
+            summary = "답변 조회",
+            description = "답변을 조회합니다"
+    )
+    public ResponseEntity<ApiResponse<AnswerDetailResponse>> getAnswer(
+            @PathVariable Long answerId
+    ){
+        Answer answer = answerService.findAnswerById(answerId);
+        AnswerDetailResponse response = AnswerDetailResponse.from(answer);
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
 }

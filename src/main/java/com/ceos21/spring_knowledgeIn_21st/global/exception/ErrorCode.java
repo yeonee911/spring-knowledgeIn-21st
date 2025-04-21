@@ -26,6 +26,7 @@ public enum ErrorCode {
 
     // AnswerError
     CANNOT_ANSWER_OWN_POST(HttpStatus.FORBIDDEN, "You cannot answer your own post."),
+    ANSWER_NOT_FOUND(HttpStatus.NOT_FOUND, "Answer not exists"),
 
     // TokenError
     INVALID_SIGNATURE(HttpStatus.UNAUTHORIZED, "Invalid JWT signature"),

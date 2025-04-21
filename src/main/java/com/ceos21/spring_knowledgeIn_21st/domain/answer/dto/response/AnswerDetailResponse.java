@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 
 public record AnswerDetailResponse (
         Long answerId,
+        Long postId,
         UserSummaryResponse user,
         String content,
         Integer likeCount,
@@ -19,6 +20,7 @@ public record AnswerDetailResponse (
     public static AnswerDetailResponse from(Answer answer) {
         return new AnswerDetailResponse(
                 answer.getId(),
+                answer.getPost().getId(),
                 new UserSummaryResponse(
                         answer.getUser().getId(),
                         answer.getUser().getName(),
