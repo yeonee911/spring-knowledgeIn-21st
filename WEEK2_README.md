@@ -158,7 +158,7 @@
     - `created_at`: `DATETIME` - 게시글 생성 시간
     - `updated_at`: `DATETIME` - 게시글 수정 시간
 
-### comment 테이블
+### baseComment 테이블
 - **설명**: 게시글에 달린 댓글을 저장하는 테이블입니다.
 - **속성**:
     - `comment_id`: `BIGINT` - 댓글 고유 식별자, PK
@@ -206,16 +206,16 @@
 
 ### 관계 설명
 - **user - post**: **1:N**
-- **post - comment**: **1:N**
+- **post - baseComment**: **1:N**
 - **post - image**: **1:N**
 - **post - post_hashtag**: **1:N**
 - **hashtag - post_hashtag**: **1:N**
-- **user - comment**: **1:N**
-- **comment - comment**: **1:N**
+- **user - baseComment**: **1:N**
+- **baseComment - baseComment**: **1:N**
 - **user - comment_like**: **1:N**
 - **user - comment_dislike**: **1:N**
-- **comment - comment_like**: **1:N**
-- **comment - comment_dislike**: **1:N**
+- **baseComment - comment_like**: **1:N**
+- **baseComment - comment_dislike**: **1:N**
 
 ## 시행착오
 
@@ -254,5 +254,5 @@
 
 # 😭시행착오
 
-1. `user`, `password`, `comment`가 예약어라서 SQL에서 에러
+1. `user`, `password`, `baseComment`가 예약어라서 SQL에서 에러
     - 해결: `@Table(name="users")` 등으로 예약어에서 변경

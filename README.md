@@ -11,14 +11,14 @@
 ## 🧐고민했던 지점
 ### 1️⃣길어지는 URI
 예시 상황 : 특정한 답변의 댓글을 삭제하는 경우 <br>
-uri : `/posts/{postId}/answers/{answerId}/comments/{commentId}` <br>
+uri : `/posts/{postId}/answers/{answerId}/baseComments/{commentId}` <br>
 
 왜냐하면 특정한 게시글에 대한 답변일 경우 `/posts/{postId}/answers/{answerId}` <br>
 즉 이미 앞에 `/post/{postId}`가 붙음.
 
 따라서 특정한 답변에 대한 댓글일 경우, 앞의 post가 누적되어서 uri가 길어짐
 
-🤔<u>**만약 `/answers/{answerId}/comments/{commentId}`로 쓸 경우?**</u>
+🤔<u>**만약 `/answers/{answerId}/baseComments/{commentId}`로 쓸 경우?**</u>
 
 answer마다 고유한 id를 가지기 때문에 어떤 답변에 댓글이 달렸는지 판단하기에는 무리 없음. <br>
 그러나 답변에 대한 uri의 통일성은 깨질 수 있음

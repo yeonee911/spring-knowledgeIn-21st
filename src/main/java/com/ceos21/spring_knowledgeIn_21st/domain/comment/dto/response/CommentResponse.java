@@ -1,6 +1,6 @@
 package com.ceos21.spring_knowledgeIn_21st.domain.comment.dto.response;
 
-import com.ceos21.spring_knowledgeIn_21st.domain.comment.domain.Comment;
+import com.ceos21.spring_knowledgeIn_21st.domain.comment.domain.BaseComment;
 import com.ceos21.spring_knowledgeIn_21st.domain.user.dto.reponse.UserSummaryResponse;
 
 import java.time.LocalDateTime;
@@ -12,16 +12,16 @@ public record CommentResponse(
         LocalDateTime updatedAt,
         UserSummaryResponse user
 ) {
-    public static CommentResponse from(Comment comment) {
+    public static CommentResponse from(BaseComment baseComment) {
         return new CommentResponse(
-                comment.getId(),
-                comment.getContent(),
-                comment.getCreatedAt(),
-                comment.getUpdatedAt(),
+                baseComment.getId(),
+                baseComment.getContent(),
+                baseComment.getCreatedAt(),
+                baseComment.getUpdatedAt(),
                 new UserSummaryResponse(
-                        comment.getUser().getId(),
-                        comment.getUser().getName(),
-                        comment.getUser().getEmail()
+                        baseComment.getUser().getId(),
+                        baseComment.getUser().getName(),
+                        baseComment.getUser().getEmail()
                 )
         );
     }

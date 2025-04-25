@@ -1,7 +1,7 @@
 package com.ceos21.spring_knowledgeIn_21st.domain.comment.application;
 
 import com.ceos21.spring_knowledgeIn_21st.domain.comment.dao.CommentRepository;
-import com.ceos21.spring_knowledgeIn_21st.domain.comment.domain.Comment;
+import com.ceos21.spring_knowledgeIn_21st.domain.comment.domain.BaseComment;
 import com.ceos21.spring_knowledgeIn_21st.domain.post.dao.PostRepository;
 import com.ceos21.spring_knowledgeIn_21st.global.exception.CustomException;
 import com.ceos21.spring_knowledgeIn_21st.global.exception.ErrorCode;
@@ -26,7 +26,7 @@ public class CommentService {
      * @param postId
      * @return
      */
-    public List<Comment> findAllComments(Long postId) {
+    public List<BaseComment> findAllComments(Long postId) {
         if (!postRepository.existsById(postId)) {
             throw new CustomException(ErrorCode.POST_NOT_FOUND);
         }
