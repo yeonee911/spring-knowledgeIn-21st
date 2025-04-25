@@ -51,19 +51,27 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                        // answers : 게시글 내 답변 추가/조회
+                        .requestMatchers(HttpMethod.GET, "/posts/*/answers").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/posts/*/answers").authenticated()
+
+                        // comments
+                        .requestMatchers(HttpMethod.GET, "/posts/*/comments").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/posts/*/comments").authenticated()
+
+                        // answers : 답변 단건 수정/삭제/조회
+                        .requestMatchers(HttpMethod.GET, "/answers/**").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/answers/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/answers/**").authenticated()
+
                         // posts
                         .requestMatchers(HttpMethod.GET, "/posts/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/posts/**").authenticated()
                         .requestMatchers(HttpMethod.PATCH, "/posts/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/posts/**").authenticated()
 
-                        // answers : 게시글 내 답변 추가/조회
-                        .requestMatchers(HttpMethod.GET, "/posts/*/answers").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/posts/*/answers").authenticated()
-                        // answers : 답변 단건 수정/삭제/조회
-                        .requestMatchers(HttpMethod.GET, "/answers/**").permitAll()
-                        .requestMatchers(HttpMethod.PATCH, "/answers/**").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/answers/**").authenticated()
+
+
                         .requestMatchers("/",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
