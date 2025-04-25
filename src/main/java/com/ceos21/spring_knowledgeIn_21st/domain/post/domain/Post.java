@@ -1,6 +1,8 @@
 package com.ceos21.spring_knowledgeIn_21st.domain.post.domain;
 
 import com.ceos21.spring_knowledgeIn_21st.domain.answer.domain.Answer;
+import com.ceos21.spring_knowledgeIn_21st.domain.comment.domain.AnswerComment;
+import com.ceos21.spring_knowledgeIn_21st.domain.comment.domain.PostComment;
 import com.ceos21.spring_knowledgeIn_21st.global.common.BaseEntity;
 import com.ceos21.spring_knowledgeIn_21st.domain.postHashtag.domain.PostHashtag;
 import com.ceos21.spring_knowledgeIn_21st.domain.user.domain.User;
@@ -32,7 +34,7 @@ public class Post extends BaseEntity {
     private String content;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    private List<BaseComment> baseComments = new ArrayList<>();
+    private List<PostComment> postComments = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Answer> answers = new ArrayList<>();
@@ -50,6 +52,16 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "user_id")
     @JsonBackReference
     private User user;
+
+    @Builder
+    public Post(String title, String content, User user) {
+        this.title = title;
+        this.content = content;
+        this.user = user;
+        this.postComments = new ArrayList<>();
+        this.images = new ArrayList<>();
+        this.postHashtags = new ArrayList<>();
+    }
 
     public void addImage(Image image) {
         if (this.images == null) {
@@ -71,13 +83,8 @@ public class Post extends BaseEntity {
         answer.setPost(this);
     }
 
-    @Builder
-    public Post(String title, String content, User user) {
-        this.title = title;
-        this.content = content;
-        this.user = user;
-        this.baseComments = new ArrayList<>();
-        this.images = new ArrayList<>();
-        this.postHashtags = new ArrayList<>();
+    public void addPostComment(PostComment comment) {
+        this.postComments.add(comment);
+        comment.setPost(this);
     }
 }

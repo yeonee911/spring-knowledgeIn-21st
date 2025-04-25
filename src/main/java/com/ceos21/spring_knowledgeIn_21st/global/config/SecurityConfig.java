@@ -55,7 +55,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/posts/*/answers").permitAll()
                         .requestMatchers(HttpMethod.POST, "/posts/*/answers").authenticated()
 
-                        // baseComments
+                        // Comments
                         .requestMatchers(HttpMethod.GET, "/posts/*/comments").permitAll()
                         .requestMatchers(HttpMethod.POST, "/posts/*/comments").authenticated()
 
