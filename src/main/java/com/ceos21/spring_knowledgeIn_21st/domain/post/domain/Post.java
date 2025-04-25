@@ -4,7 +4,7 @@ import com.ceos21.spring_knowledgeIn_21st.domain.answer.domain.Answer;
 import com.ceos21.spring_knowledgeIn_21st.global.common.BaseEntity;
 import com.ceos21.spring_knowledgeIn_21st.domain.postHashtag.domain.PostHashtag;
 import com.ceos21.spring_knowledgeIn_21st.domain.user.domain.User;
-import com.ceos21.spring_knowledgeIn_21st.domain.comment.domain.Comment;
+import com.ceos21.spring_knowledgeIn_21st.domain.comment.domain.BaseComment;
 import com.ceos21.spring_knowledgeIn_21st.domain.image.domain.Image;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -32,7 +32,7 @@ public class Post extends BaseEntity {
     private String content;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    private List<Comment> comments = new ArrayList<>();
+    private List<BaseComment> baseComments = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Answer> answers = new ArrayList<>();
@@ -76,7 +76,7 @@ public class Post extends BaseEntity {
         this.title = title;
         this.content = content;
         this.user = user;
-        this.comments = new ArrayList<>();
+        this.baseComments = new ArrayList<>();
         this.images = new ArrayList<>();
         this.postHashtags = new ArrayList<>();
     }

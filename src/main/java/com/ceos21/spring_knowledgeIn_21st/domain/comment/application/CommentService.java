@@ -1,7 +1,7 @@
 package com.ceos21.spring_knowledgeIn_21st.domain.comment.application;
 
-import com.ceos21.spring_knowledgeIn_21st.domain.comment.dao.CommentRepository;
-import com.ceos21.spring_knowledgeIn_21st.domain.comment.domain.Comment;
+import com.ceos21.spring_knowledgeIn_21st.domain.comment.dao.PostCommentRepository;
+import com.ceos21.spring_knowledgeIn_21st.domain.comment.domain.PostComment;
 import com.ceos21.spring_knowledgeIn_21st.domain.post.dao.PostRepository;
 import com.ceos21.spring_knowledgeIn_21st.global.exception.CustomException;
 import com.ceos21.spring_knowledgeIn_21st.global.exception.ErrorCode;
@@ -14,11 +14,11 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class CommentService {
     private final PostRepository postRepository;
-    private final CommentRepository commentRepository;
+    private final PostCommentRepository postCommentRepository;
 
-    public CommentService(PostRepository postRepository, CommentRepository commentRepository) {
+    public CommentService(PostRepository postRepository, PostCommentRepository postCommentRepository) {
         this.postRepository = postRepository;
-        this.commentRepository = commentRepository;
+        this.postCommentRepository = postCommentRepository;
     }
 
     /**
@@ -26,10 +26,10 @@ public class CommentService {
      * @param postId
      * @return
      */
-    public List<Comment> findAllComments(Long postId) {
+    public List<PostComment> findAllComments(Long postId) {
         if (!postRepository.existsById(postId)) {
             throw new CustomException(ErrorCode.POST_NOT_FOUND);
         }
-        return commentRepository.findByPostId(postId);
+        return postCommentRepository.findByPostId(postId);
     }
 }
