@@ -1,17 +1,22 @@
 package com.ceos21.spring_knowledgeIn_21st.domain.comment.domain;
 
 import com.ceos21.spring_knowledgeIn_21st.domain.answer.domain.Answer;
+import com.ceos21.spring_knowledgeIn_21st.domain.post.domain.Post;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 public abstract class AnswerComment extends BaseComment {
 
     @ManyToOne(fetch = FetchType.LAZY)

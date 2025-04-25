@@ -1,7 +1,9 @@
 package com.ceos21.spring_knowledgeIn_21st.domain.user.domain;
 
 import com.ceos21.spring_knowledgeIn_21st.domain.answer.domain.Answer;
+import com.ceos21.spring_knowledgeIn_21st.domain.comment.domain.AnswerComment;
 import com.ceos21.spring_knowledgeIn_21st.domain.comment.domain.BaseComment;
+import com.ceos21.spring_knowledgeIn_21st.domain.comment.domain.PostComment;
 import com.ceos21.spring_knowledgeIn_21st.domain.user.enums.UserRole;
 import com.ceos21.spring_knowledgeIn_21st.global.common.BaseEntity;
 import com.ceos21.spring_knowledgeIn_21st.domain.post.domain.Post;
@@ -49,7 +51,10 @@ public class User extends BaseEntity {
     private List<Answer> answers  = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<BaseComment> baseComments = new ArrayList<>();
+    private List<PostComment> postComments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<AnswerComment> answerComments = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Reaction> reactions  = new ArrayList<>();

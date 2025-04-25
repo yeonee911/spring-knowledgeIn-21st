@@ -5,8 +5,9 @@ import com.ceos21.spring_knowledgeIn_21st.global.common.BaseEntity;
 import com.ceos21.spring_knowledgeIn_21st.domain.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
-@Builder
+@SuperBuilder
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
