@@ -2,6 +2,7 @@ package com.ceos21.spring_knowledgeIn_21st.domain.comment.api;
 
 import com.ceos21.spring_knowledgeIn_21st.domain.comment.application.CommentService;
 import com.ceos21.spring_knowledgeIn_21st.domain.comment.domain.BaseComment;
+import com.ceos21.spring_knowledgeIn_21st.domain.comment.domain.PostComment;
 import com.ceos21.spring_knowledgeIn_21st.domain.comment.dto.response.CommentResponse;
 import com.ceos21.spring_knowledgeIn_21st.global.common.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,11 +28,11 @@ public class CommentController {
     public ResponseEntity<ApiResponse<List<CommentResponse>>> getAllComments (
             @PathVariable Long postId
     ) {
-        List<BaseComment> baseComments = commentService.findAllComments(postId);
-        if (baseComments.isEmpty()) {
+        List<PostComment> comments = commentService.findAllComments(postId);
+        if (comments.isEmpty()) {
             return ResponseEntity.ok(ApiResponse.success(List.of(), "등록된 댓글이 없습니다."));
         }
-        List<CommentResponse> responses = baseComments.stream()
+        List<CommentResponse> responses = comments.stream()
                 .map(CommentResponse::from)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(ApiResponse.success(responses));
