@@ -36,9 +36,13 @@ public enum ErrorCode {
     UNSUPRORTED_TOKEN(HttpStatus.UNAUTHORIZED, "Unsupported JWT token"),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "Invalid JWT token"),
     INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "Refresh token is invalid or mismatched"),
-    REFRESH_TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "Refresh token not found in server")
-    ;
+    REFRESH_TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "Refresh token not found in server"),
 
+    // CommentError
+    COMMENT_ACCESS_DENIED(HttpStatus.UNAUTHORIZED, "Only the author is allowed to modify or delete this comment."),
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "Comment not exists"),
+
+    ;
     private final HttpStatus status;
     private final String message;
 }
