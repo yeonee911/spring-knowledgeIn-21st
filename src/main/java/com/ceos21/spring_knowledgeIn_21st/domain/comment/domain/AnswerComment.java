@@ -17,9 +17,12 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @SuperBuilder
-public abstract class AnswerComment extends BaseComment {
-
+public class AnswerComment extends BaseComment {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "answer_id", nullable = false)
     private Answer answer;
+
+    public void setAnswer(Answer answer) {
+        this.answer = answer;
+    }
 }

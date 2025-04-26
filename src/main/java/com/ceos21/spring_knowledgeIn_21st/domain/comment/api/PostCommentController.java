@@ -2,9 +2,8 @@ package com.ceos21.spring_knowledgeIn_21st.domain.comment.api;
 
 import com.ceos21.spring_knowledgeIn_21st.domain.comment.application.PostCommentService;
 import com.ceos21.spring_knowledgeIn_21st.domain.comment.domain.PostComment;
-import com.ceos21.spring_knowledgeIn_21st.domain.comment.dto.request.PostCommentAddRequest;
+import com.ceos21.spring_knowledgeIn_21st.domain.comment.dto.request.CommentAddRequest;
 import com.ceos21.spring_knowledgeIn_21st.domain.comment.dto.response.CommentResponse;
-import com.ceos21.spring_knowledgeIn_21st.domain.post.dto.response.PostResponse;
 import com.ceos21.spring_knowledgeIn_21st.global.common.ApiResponse;
 import com.ceos21.spring_knowledgeIn_21st.global.security.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -48,7 +47,7 @@ public class PostCommentController {
             description = "게시글에 댓글을 등록합니다"
     )
     public ResponseEntity<ApiResponse<CommentResponse>> addComment(
-            @RequestBody PostCommentAddRequest request,
+            @RequestBody CommentAddRequest request,
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable Long postId
     ){

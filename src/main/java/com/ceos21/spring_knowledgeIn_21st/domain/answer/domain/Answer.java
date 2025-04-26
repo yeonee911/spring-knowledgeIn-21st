@@ -72,4 +72,9 @@ public class Answer extends BaseEntity {
     public void setPost(Post post) {
         this.post = post;
     }
+
+    public void addAnswerComment(AnswerComment comment) {
+        this.answerComments.add(comment);
+        comment.setAnswer(this);
+    }
 }

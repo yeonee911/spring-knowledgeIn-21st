@@ -1,8 +1,10 @@
 package com.ceos21.spring_knowledgeIn_21st.domain.comment.application;
 
 import com.ceos21.spring_knowledgeIn_21st.domain.answer.dao.AnswerRepository;
+import com.ceos21.spring_knowledgeIn_21st.domain.answer.domain.Answer;
 import com.ceos21.spring_knowledgeIn_21st.domain.comment.dao.AnswerCommentRepository;
 import com.ceos21.spring_knowledgeIn_21st.domain.comment.domain.AnswerComment;
+import com.ceos21.spring_knowledgeIn_21st.domain.comment.dto.request.CommentAddRequest;
 import com.ceos21.spring_knowledgeIn_21st.domain.user.dao.UserRepository;
 import com.ceos21.spring_knowledgeIn_21st.domain.user.domain.User;
 import com.ceos21.spring_knowledgeIn_21st.global.exception.CustomException;
@@ -19,6 +21,7 @@ import java.util.List;
 public class AnswerCommentService {
     private final AnswerCommentRepository answerCommentRepository;
     private final AnswerRepository answerRepository;
+    private final UserRepository userRepository;
 
     /**
      * 답변 댓글 전체 조회
@@ -30,5 +33,20 @@ public class AnswerCommentService {
             throw new CustomException(ErrorCode.ANSWER_NOT_FOUND);
         }
         return answerCommentRepository.findByAnswerId(answerId);
+    }
+
+    /**
+     * 답변 댓글 추가
+     * @param request
+     * @return
+     */
+    public AnswerComment addComment(CommentAddRequest request, Long answerId, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(()->new CustomException(ErrorCode.USER_NOT_FOUND));
+        Answer answer = answerRepository.findById(answerId)
+                .orElseThrow(()->new CustomException(ErrorCode.ANSWER_NOT_FOUND));
+        AnswerComment comment = request.toAnswerCommentEntity(answer, user);
+        answer.addAnswerComment(comment);
+        return answerCommentRepository.save(comment);
     }
 }

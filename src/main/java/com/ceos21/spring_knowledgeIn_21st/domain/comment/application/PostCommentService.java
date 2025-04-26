@@ -2,7 +2,7 @@ package com.ceos21.spring_knowledgeIn_21st.domain.comment.application;
 
 import com.ceos21.spring_knowledgeIn_21st.domain.comment.dao.PostCommentRepository;
 import com.ceos21.spring_knowledgeIn_21st.domain.comment.domain.PostComment;
-import com.ceos21.spring_knowledgeIn_21st.domain.comment.dto.request.PostCommentAddRequest;
+import com.ceos21.spring_knowledgeIn_21st.domain.comment.dto.request.CommentAddRequest;
 import com.ceos21.spring_knowledgeIn_21st.domain.post.dao.PostRepository;
 import com.ceos21.spring_knowledgeIn_21st.domain.post.domain.Post;
 import com.ceos21.spring_knowledgeIn_21st.domain.user.dao.UserRepository;
@@ -45,12 +45,12 @@ public class PostCommentService {
      * @param userId
      * @return
      */
-    public PostComment addComment(PostCommentAddRequest request, Long postId, Long userId) {
+    public PostComment addComment(CommentAddRequest request, Long postId, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(()->new CustomException(ErrorCode.USER_NOT_FOUND));
         Post post = postRepository.findById(postId)
                 .orElseThrow(()->new CustomException(ErrorCode.POST_NOT_FOUND));
-        PostComment comment = request.toEntity(post, user);
+        PostComment comment = request.toPostCommentEntity(post, user);
         post.addPostComment(comment);
         return postCommentRepository.save(comment);
     }
