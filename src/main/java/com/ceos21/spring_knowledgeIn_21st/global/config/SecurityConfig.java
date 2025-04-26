@@ -58,6 +58,8 @@ public class SecurityConfig {
                         // Comments
                         .requestMatchers(HttpMethod.GET, "/posts/*/comments").permitAll()
                         .requestMatchers(HttpMethod.POST, "/posts/*/comments").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/comments/**").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "/comments/**").authenticated()
 
                         // answers : 답변 단건 수정/삭제/조회
                         .requestMatchers(HttpMethod.GET, "/answers/**").permitAll()
