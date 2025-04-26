@@ -2,7 +2,9 @@ package com.ceos21.spring_knowledgeIn_21st.domain.comment.application;
 
 import com.ceos21.spring_knowledgeIn_21st.domain.comment.dao.AnswerCommentRepository;
 import com.ceos21.spring_knowledgeIn_21st.domain.comment.dao.PostCommentRepository;
+import com.ceos21.spring_knowledgeIn_21st.domain.comment.domain.AnswerComment;
 import com.ceos21.spring_knowledgeIn_21st.domain.comment.domain.BaseComment;
+import com.ceos21.spring_knowledgeIn_21st.domain.comment.domain.PostComment;
 import com.ceos21.spring_knowledgeIn_21st.global.exception.CustomException;
 import com.ceos21.spring_knowledgeIn_21st.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -43,5 +45,20 @@ public class CommentService {
                 .map(c->(BaseComment) c))
                 .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
 
+    }
+
+    /**
+     * 댓글 통합 삭제
+     * @param comment
+     */
+    private void deleteCommentEntity(BaseComment comment) {
+        if (comment instanceof PostComment) {
+            postCommentRepository.delete((PostComment) comment);
+        }else if (comment instanceof AnswerComment) {
+            answerCommentRepository.delete((AnswerComment) comment);
+        }
+        else {
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
     }
 }
