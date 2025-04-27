@@ -21,7 +21,7 @@ public abstract class BaseComment extends BaseEntity {
     @Column(name = "comment_id")
     private Long id;
 
-    private String content;
+    protected String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

@@ -4,6 +4,7 @@ import com.ceos21.spring_knowledgeIn_21st.domain.comment.dao.PostCommentReposito
 import com.ceos21.spring_knowledgeIn_21st.domain.comment.domain.BaseComment;
 import com.ceos21.spring_knowledgeIn_21st.domain.comment.domain.PostComment;
 import com.ceos21.spring_knowledgeIn_21st.domain.comment.dto.request.CommentAddRequest;
+import com.ceos21.spring_knowledgeIn_21st.domain.comment.dto.request.CommentUpdateRequest;
 import com.ceos21.spring_knowledgeIn_21st.domain.post.dao.PostRepository;
 import com.ceos21.spring_knowledgeIn_21st.domain.post.domain.Post;
 import com.ceos21.spring_knowledgeIn_21st.domain.user.dao.UserRepository;
@@ -73,5 +74,28 @@ public class PostCommentService {
             throw new CustomException(ErrorCode.COMMENT_ACCESS_DENIED);
         }
         postCommentRepository.delete(comment);
+    }
+
+    /**
+     * 댓글 수정
+     * @param request
+     * @param postId
+     * @param commentId
+     * @param userId
+     * @return
+     */
+    @Transactional
+    public PostComment updateComment(CommentUpdateRequest request, Long postId, Long commentId, Long userId) {
+        PostComment comment = postCommentRepository.findById(commentId)
+                .orElseThrow(()->new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+        if (!comment.getUser().getId().equals(userId)) {
+            throw new CustomException(ErrorCode.COMMENT_ACCESS_DENIED);
+        }
+        if (!comment.getPost().getId().equals(postId)) {
+            throw new CustomException(ErrorCode.POST_NOT_FOUND);
+        }
+
+        comment.update(request.content());
+        return comment;
     }
 }
