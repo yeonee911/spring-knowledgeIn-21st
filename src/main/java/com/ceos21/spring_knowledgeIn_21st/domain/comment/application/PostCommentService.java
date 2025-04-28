@@ -86,7 +86,7 @@ public class PostCommentService {
      */
     @Transactional
     public PostComment updateComment(CommentUpdateRequest request, Long postId, Long commentId, Long userId) {
-        PostComment comment = postCommentRepository.findById(commentId)
+        PostComment comment = postCommentRepository.findByIdWithUserAndPost(commentId)
                 .orElseThrow(()->new CustomException(ErrorCode.COMMENT_NOT_FOUND));
         if (!comment.getUser().getId().equals(userId)) {
             throw new CustomException(ErrorCode.COMMENT_ACCESS_DENIED);
