@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -20,5 +21,9 @@ public class PostComment extends BaseComment {
 
     public void setPost(Post post) {
         this.post = post;
+    }
+
+    public void update(@NotBlank String content) {
+        this.content = content;
     }
 }
