@@ -11,8 +11,7 @@ import java.util.Optional;
 
 public interface AnswerCommentRepository extends JpaRepository<AnswerComment, Long> {
     List<AnswerComment> findByAnswerId(Long answerId);
-
-
+    
     @Query("SELECT ac FROM AnswerComment ac JOIN FETCH ac.user JOIN FETCH ac.answer WHERE ac.id = :id")
     Optional<AnswerComment> findByIdWithUserAndAnswer(@Param("id") Long id);
 }
