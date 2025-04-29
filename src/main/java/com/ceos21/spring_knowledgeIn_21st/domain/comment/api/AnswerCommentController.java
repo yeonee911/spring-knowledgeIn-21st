@@ -71,7 +71,7 @@ public class AnswerCommentController {
             @PathVariable Long commentId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ){
-        AnswerComment comment = answerCommentService.updateComment(request, answerId);
+        AnswerComment comment = answerCommentService.updateComment(request, answerId, userDetails.getUserId());
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(ApiResponse.success(CommentResponse.from(comment)));

@@ -92,7 +92,7 @@ public class PostCommentService {
             throw new CustomException(ErrorCode.COMMENT_ACCESS_DENIED);
         }
         if (!comment.getPost().getId().equals(postId)) {
-            throw new CustomException(ErrorCode.POST_NOT_FOUND);
+            throw new CustomException(ErrorCode.POST_ACCESS_DENIED);
         }
 
         comment.update(request.content());

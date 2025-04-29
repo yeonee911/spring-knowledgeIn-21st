@@ -5,6 +5,7 @@ import com.ceos21.spring_knowledgeIn_21st.domain.answer.domain.Answer;
 import com.ceos21.spring_knowledgeIn_21st.domain.comment.dao.AnswerCommentRepository;
 import com.ceos21.spring_knowledgeIn_21st.domain.comment.domain.AnswerComment;
 import com.ceos21.spring_knowledgeIn_21st.domain.comment.dto.request.CommentAddRequest;
+import com.ceos21.spring_knowledgeIn_21st.domain.comment.dto.request.CommentUpdateRequest;
 import com.ceos21.spring_knowledgeIn_21st.domain.user.dao.UserRepository;
 import com.ceos21.spring_knowledgeIn_21st.domain.user.domain.User;
 import com.ceos21.spring_knowledgeIn_21st.global.exception.CustomException;
@@ -48,5 +49,26 @@ public class AnswerCommentService {
         AnswerComment comment = request.toAnswerCommentEntity(answer, user);
         answer.addAnswerComment(comment);
         return answerCommentRepository.save(comment);
+    }
+
+    /**
+     * 댓글 수정
+     * @param request
+     * @param answerId
+     * @return
+     */
+    @Transactional
+    public AnswerComment updateComment(CommentUpdateRequest request, Long answerId, Long userId) {
+        AnswerComment comment = answerCommentRepository.findByIdWithUserAndAnswer(answerId)
+                .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+        if (!comment.getUser().getId().equals(userId)) {
+            throw new CustomException(ErrorCode.COMMENT_ACCESS_DENIED);
+        }
+        if (!comment.getAnswer().getId().equals(answerId)) {
+            throw new CustomException(ErrorCode.ANSWER_ACCESS_DENIED);
+        }
+
+        comment.update(request.content());
+        return comment;
     }
 }
