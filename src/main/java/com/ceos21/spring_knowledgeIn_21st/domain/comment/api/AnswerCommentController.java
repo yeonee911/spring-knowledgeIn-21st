@@ -76,4 +76,20 @@ public class AnswerCommentController {
                 .status(HttpStatus.OK)
                 .body(ApiResponse.success(CommentResponse.from(comment)));
     }
+
+    @DeleteMapping("/answers/{answerId}/comments/{commentId}")
+    @Operation(
+            summary = "댓글 삭제",
+            description = "댓글을 삭제합니다"
+    )
+    @SecurityRequirement(name = "Authorization")
+    public ResponseEntity<ApiResponse<Void>> deleteComment(
+            @PathVariable Long answerId,
+            @PathVariable Long commentId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ){
+        answerCommentService.deleteComment(answerId, commentId, userDetails.getUser().getId());
+        return ResponseEntity
+                .ok(ApiResponse.success(null, "댓글이 삭제되었습니다"));
+    }
 }

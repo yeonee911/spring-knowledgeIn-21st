@@ -64,11 +64,24 @@ public class AnswerCommentService {
         if (!comment.getUser().getId().equals(userId)) {
             throw new CustomException(ErrorCode.COMMENT_ACCESS_DENIED);
         }
-        if (!comment.getAnswer().getId().equals(answerId)) {
-            throw new CustomException(ErrorCode.ANSWER_ACCESS_DENIED);
-        }
 
         comment.update(request.content());
         return comment;
+    }
+
+    /**
+     * 댓글 삭제
+     * @param answerId
+     * @param commentId
+     * @param userId
+     */
+    @Transactional
+    public void deleteComment(Long answerId, Long commentId, Long userId) {
+        AnswerComment comment = answerCommentRepository.findByIdWithUserAndAnswer(commentId)
+                .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+        if (!comment.getUser().getId().equals(userId)) {
+            throw new CustomException(ErrorCode.COMMENT_ACCESS_DENIED);
+        }
+        answerCommentRepository.delete(comment);
     }
 }
