@@ -104,4 +104,19 @@ public class AnswerController {
         return ResponseEntity
                 .ok(ApiResponse.success(null, "답변이 삭제되었습니다"));
     }
+
+    @PostMapping("/answers/{answerId}/reactions/like")
+    @SecurityRequirement(name = "Authorization")
+    @Operation(
+            summary = "답변 좋아요",
+            description = "답변에 좋아요를 추가합니다. 이때 자신의 답변에는 반응 불가 및 이미 좋아요 또는 싫어요를 누른 경우 반응 불가"
+    )
+    public ResponseEntity<ApiResponse<AnswerDetailResponse>> likeAnswer(
+            @PathVariable Long answerId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ){
+        String message = answerService.likeAnswer(answerId, userDetails.getUser());
+        return ResponseEntity
+                .ok(ApiResponse.success(null, message));
+    }
 }

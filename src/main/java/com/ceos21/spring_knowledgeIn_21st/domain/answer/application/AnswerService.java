@@ -6,6 +6,9 @@ import com.ceos21.spring_knowledgeIn_21st.domain.answer.dto.request.AnswerAddReq
 import com.ceos21.spring_knowledgeIn_21st.domain.answer.dto.request.AnswerUpdateRequest;
 import com.ceos21.spring_knowledgeIn_21st.domain.post.dao.PostRepository;
 import com.ceos21.spring_knowledgeIn_21st.domain.post.domain.Post;
+import com.ceos21.spring_knowledgeIn_21st.domain.reaction.dao.ReactionRepository;
+import com.ceos21.spring_knowledgeIn_21st.domain.reaction.domain.Reaction;
+import com.ceos21.spring_knowledgeIn_21st.domain.reaction.domain.ReactionType;
 import com.ceos21.spring_knowledgeIn_21st.domain.user.dao.UserRepository;
 import com.ceos21.spring_knowledgeIn_21st.domain.user.domain.User;
 import com.ceos21.spring_knowledgeIn_21st.global.exception.CustomException;
@@ -16,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +29,7 @@ public class AnswerService {
     private final AnswerRepository answerRepository;
     private final UserRepository userRepository;
     private final PostRepository postRepository;
+    private final ReactionRepository reactionRepository;
 
     /**
      * 답변 추가
@@ -90,5 +95,47 @@ public class AnswerService {
             throw new CustomException(ErrorCode.ANSWER_ACCESS_DENIED);
         }
         answerRepository.deleteById(answerId);
+    }
+
+    /**
+     * 좋아요
+     * @param answerId
+     * @param user
+     * @return
+     */
+    @Transactional
+    public String likeAnswer(Long answerId, User user) {
+        String message = "";
+        Optional<Reaction> existingReaction = reactionRepository.findByUserIdAndAnswerId(user.getId(), answerId);
+        Answer answer = answerRepository.findById(answerId)
+                .orElseThrow(() -> new CustomException(ErrorCode.ANSWER_NOT_FOUND));
+
+        if (existingReaction.isEmpty()) {
+            Reaction reaction = Reaction.builder()
+                    .user(user)
+                    .answer(answer)
+                    .type(ReactionType.LIKE)
+                    .build();
+            reactionRepository.save(reaction);
+            answer.increaseLikeCount();
+            message = "좋아요를 눌렀습니다";
+        }
+        else {
+            Reaction reaction = existingReaction.get();
+            if (reaction.getType() == ReactionType.LIKE) {
+                reactionRepository.delete(reaction);
+                answer.decreaseLikeCount();
+                message = "좋아요를 취소했습니다";
+            }
+            else if (reaction.getType() == ReactionType.DISLIKE) {
+                reaction.changeType(ReactionType.LIKE);
+                reactionRepository.save(reaction);
+                answer.decreaseDislikeCount();
+                answer.increaseLikeCount();
+                message = "싫어요 취소 후 좋아요를 눌렀습니다";
+            }
+        }
+
+        return message;
     }
 }
