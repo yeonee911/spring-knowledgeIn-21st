@@ -68,8 +68,6 @@ public class PostCommentService {
                 .orElseThrow(()->new CustomException(ErrorCode.POST_NOT_FOUND));
         PostComment comment = postCommentRepository.findById(commentId)
                 .orElseThrow(()->new CustomException(ErrorCode.COMMENT_NOT_FOUND));
-        System.out.println("댓글 작성자 ID = " + comment.getUser().getId());
-        System.out.println("현재 로그인한 사용자 ID = " + userId);
         if (!comment.getUser().getId().equals(userId)) {
             throw new CustomException(ErrorCode.COMMENT_ACCESS_DENIED);
         }
