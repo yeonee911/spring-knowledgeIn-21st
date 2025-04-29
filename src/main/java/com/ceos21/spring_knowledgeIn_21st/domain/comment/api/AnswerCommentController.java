@@ -3,6 +3,7 @@ package com.ceos21.spring_knowledgeIn_21st.domain.comment.api;
 import com.ceos21.spring_knowledgeIn_21st.domain.comment.application.AnswerCommentService;
 import com.ceos21.spring_knowledgeIn_21st.domain.comment.domain.AnswerComment;
 import com.ceos21.spring_knowledgeIn_21st.domain.comment.dto.request.CommentAddRequest;
+import com.ceos21.spring_knowledgeIn_21st.domain.comment.dto.request.CommentUpdateRequest;
 import com.ceos21.spring_knowledgeIn_21st.domain.comment.dto.response.CommentResponse;
 import com.ceos21.spring_knowledgeIn_21st.global.common.ApiResponse;
 import com.ceos21.spring_knowledgeIn_21st.global.security.UserDetailsImpl;
@@ -56,5 +57,23 @@ public class AnswerCommentController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(ApiResponse.success(CommentResponse.from(comment), "댓글이 등록되었습니다"));
+    }
+
+    @PostMapping("/answers/{answerId}/comments/{commentId}")
+    @SecurityRequirement(name = "Authorization")
+    @Operation(
+            summary = "답변 댓글 수정",
+            description = "답변의 댓긍을 수정합니다"
+    )
+    public ResponseEntity<ApiResponse<CommentResponse>> updateComment(
+            @RequestBody CommentUpdateRequest request,
+            @PathVariable Long answerId,
+            @PathVariable Long commentId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ){
+        AnswerComment comment = answerCommentService.updateComment(request, answerId, commentId, userDetails.getUserId());
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResponse.success(CommentResponse.from(comment)));
     }
 }
