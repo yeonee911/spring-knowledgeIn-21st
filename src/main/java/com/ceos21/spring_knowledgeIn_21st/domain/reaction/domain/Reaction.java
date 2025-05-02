@@ -7,11 +7,16 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.util.ArrayList;
+
 @SuperBuilder
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@Table(name = "reaction", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"user_id", "answer_id"})
+})
 public class Reaction extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,4 +34,8 @@ public class Reaction extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "answer_id")
     private Answer answer;
+
+    public void changeType(ReactionType reactionType) {
+        this.type = reactionType;
+    }
 }
