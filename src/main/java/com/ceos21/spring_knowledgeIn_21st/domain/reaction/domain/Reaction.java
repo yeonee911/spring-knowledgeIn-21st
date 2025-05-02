@@ -14,6 +14,9 @@ import java.util.ArrayList;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@Table(name = "reaction", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"user_id", "answer_id"})
+})
 public class Reaction extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
