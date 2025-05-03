@@ -64,7 +64,7 @@
 - **좋아요 → 싫어요 변경 방법**: 좋아요를 누른 후 취소하고 싫어요를 눌러야 함. 기존에 좋아요를 눌렀다면 싫어요 선택이 불가하고, 다시 취소하고 새로운 선택을 해야 함.
 
 `updated_at` 필드는 이런 기능을 추적하는 데 유용할 수 있음.
-![image](src/main/resources/static/updated_at.webp)
+![image](../src/main/resources/static/updated_at.webp)
 ---
 
 ## 6. `created_at`과 `updated_at` 많이 들어가는 이유
