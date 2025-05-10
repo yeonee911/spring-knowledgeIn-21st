@@ -71,7 +71,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 "로그인 성공",
                 Map.of(
                         "accessToken", accessToken,
-                        "refreshToekn", refreshToken
+                        "refreshToken", refreshToken
                         )
         );
 
