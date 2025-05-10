@@ -2,7 +2,7 @@ version: "3"
 
 services:
   db:
-    image: mysql:9.3.0 #windows
+    image: mysql:latest
     container_name: mysql
     environment:
       MYSQL_ROOT_PASSWORD: rootpass
