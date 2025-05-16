@@ -4,24 +4,41 @@ services:
   db:
     image: mysql:latest
     container_name: mysql
+    platform: linux/amd64
     environment:
-      MYSQL_ROOT_PASSWORD: rootpass
       MYSQL_DATABASE: ceos21
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      TZ: 'Asia/Seoul'
     volumes:
       - dbdata:/var/lib/mysql
     ports:
       - "3306:3306"
     restart: always
+    networks:
+      - network
+    env_file:
+      - .env
+    healthcheck:
+      test: [ "CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -p${DB_PASSWORD} --silent" ]
+      interval: 30s
+      retries: 5
+      timeout: 10s
 
   web:
     container_name: spring-knowledgein-21st
-    build: .
+    image: yeonee911/deploy-test
     ports:
       - "8080:8080"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    networks:
+      - network
+    env_file:
+      - .env
     restart: always
     volumes:
       - app:/app
@@ -29,3 +46,7 @@ services:
 volumes:
   dbdata:
   app:
+
+networks:
+  network:
+    driver: bridge
